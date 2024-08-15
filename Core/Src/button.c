@@ -27,35 +27,35 @@ uint16_t scan_keys (void)
 	
 	if(key_state == KEY_STATE_OFF) //если кнопка была отпущена - ожидание нажатия
 	{
-		if(LL_GPIO_IsInputPinSet(RIGHT_BTN_GPIO_Port, RIGHT_BTN_Pin) == 1)	//если кнопка была нажата - получение кода нажатой кнопки
+		if(LL_GPIO_IsInputPinSet(RIGHT_BTN_GPIO_Port, RIGHT_BTN_Pin) == OFF)	//если кнопка была нажата - получение кода нажатой кнопки
 		{
 			key_state =  KEY_STATE_ON; //переход в режим нажатия кнопки
 			key_code = KEY_RIGHT;
 		}
 		else
 		{
-			if (LL_GPIO_IsInputPinSet(CENTER_BTN_GPIO_Port, CENTER_BTN_Pin) == 1)
+			if (LL_GPIO_IsInputPinSet(CENTER_BTN_GPIO_Port, CENTER_BTN_Pin) == OFF)
 			{
 				key_state =  KEY_STATE_ON;
 				key_code = KEY_CENTER_SHORT;
 			}
 			else
 			{
-				if (LL_GPIO_IsInputPinSet(LEFT_BTN_GPIO_Port, LEFT_BTN_Pin) == 1)
+				if (LL_GPIO_IsInputPinSet(LEFT_BTN_GPIO_Port, LEFT_BTN_Pin) == OFF)
 				{
 					key_state =  KEY_STATE_ON;
 					key_code = KEY_LEFT;
 				}
 				else
 				{
-					if (LL_GPIO_IsInputPinSet(ENC1_BTN_GPIO_Port,ENC1_BTN_Pin) == 1)
+					if (LL_GPIO_IsInputPinSet(ENC1_BTN_GPIO_Port,ENC1_BTN_Pin) == OFF)
 					{
 						key_state = KEY_STATE_ON;
 						key_code = KEY_ENC_SHORT;
 					}
 					else
 					{
-						if (LL_GPIO_IsInputPinSet(MODE_BTN_GPIO_Port, MODE_BTN_Pin) == 1)
+						if (LL_GPIO_IsInputPinSet(MODE_BTN_GPIO_Port, MODE_BTN_Pin) == OFF)
 						{
 							key_state =  	KEY_STATE_ON;
 							key_code 	= 	KEY_MODE_SHORT;
@@ -77,7 +77,7 @@ uint16_t scan_keys (void)
 		if (end_bounce == SET) //если флаг окончания дребезга установлен
 		{
 			end_bounce = RESET;  //сброс флага
-			if(scan_buttons_GPIO() == 0)	 // если кнопка отпущена (нажатие менее 50 мс это дребезг)
+			if(scan_buttons_GPIO() == ON)	 // если кнопка отпущена (нажатие менее 50 мс это дребезг)
 			{
 				key_state = KEY_STATE_OFF; //переход в начальное состояние ожидания нажатия кнопки
 				return NO_KEY; //возврат 0 
@@ -96,7 +96,7 @@ uint16_t scan_keys (void)
 		if (end_bounce == SET) //если флаг окончания дребезга установлен (устанавливается в прерывании таймера)
 		{
 			end_bounce = RESET; //сброс флага
-			if(scan_buttons_GPIO() == 0)	 // если кнопка была отпущена (короткое нажатие кнопки < 150 мс)
+			if(scan_buttons_GPIO() == ON)	 // если кнопка была отпущена (короткое нажатие кнопки < 150 мс)
 			{
 				key_state = KEY_STATE_OFF; //переход в начальное состояние ожидания нажатия кнопки
 				return key_code; //возврата номера кнопки
@@ -138,7 +138,7 @@ uint16_t scan_keys (void)
 		if (end_bounce == SET) //если флаг окончания дребезга установлен (устанавливается в прерывании таймера)
 		{
 			key_code = NO_KEY;
-			if(scan_buttons_GPIO() == 0)	 // если кнопка была отпущена (короткое нажатие кнопки < 150 мс)
+			if(scan_buttons_GPIO() == ON)	 // если кнопка была отпущена (короткое нажатие кнопки < 150 мс)
 			{
 				key_state = KEY_STATE_OFF; //переход в начальное состояние ожидания нажатия кнопки
 			}
@@ -155,10 +155,13 @@ uint16_t scan_keys (void)
 //-------------------------------------------------------------------------------------------------//
 static uint8_t scan_buttons_GPIO (void)
 {
-	return ((LL_GPIO_IsInputPinSet(RIGHT_BTN_GPIO_Port, RIGHT_BTN_Pin)) 		|| 
-					(LL_GPIO_IsInputPinSet(CENTER_BTN_GPIO_Port, CENTER_BTN_Pin)) 	|| 
-					(LL_GPIO_IsInputPinSet(LEFT_BTN_GPIO_Port, LEFT_BTN_Pin)) 			||
-					(LL_GPIO_IsInputPinSet(ENC1_BTN_GPIO_Port, ENC1_BTN_Pin)) ||
-					(LL_GPIO_IsInputPinSet(MODE_BTN_GPIO_Port, MODE_BTN_Pin))) 			; 																																		
+	if (((LL_GPIO_IsInputPinSet(RIGHT_BTN_GPIO_Port, RIGHT_BTN_Pin)) &&
+			(LL_GPIO_IsInputPinSet(CENTER_BTN_GPIO_Port, CENTER_BTN_Pin)) &&
+			(LL_GPIO_IsInputPinSet(LEFT_BTN_GPIO_Port, LEFT_BTN_Pin)) &&
+			(LL_GPIO_IsInputPinSet(ENC1_BTN_GPIO_Port, ENC1_BTN_Pin)) &&
+			(LL_GPIO_IsInputPinSet(MODE_BTN_GPIO_Port, MODE_BTN_Pin))) == ON)			
+	{	return ON;	} 		
+	else	
+	{ return OFF; }
 }
 

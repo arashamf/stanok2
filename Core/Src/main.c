@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
 #include "i2c.h"
 #include "spi.h"
 #include "tim.h"
@@ -27,6 +28,10 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "ssd1306.h"
+#include "typedef.h"
+#include "drive.h"
+#include "button.h"
+#include "eeprom.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,7 +51,10 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+encoder_data_t Pos_Enc1 = {0};
+encoder_data_t Pos_Enc2 = {0};
 
+__IO uint16_t key_code = NO_KEY;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -88,22 +96,24 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
   MX_SPI2_Init();
-  MX_I2C1_Init();
   MX_TIM1_Init();
-  MX_TIM4_Init();
-  MX_UART5_Init();
-  MX_I2C2_Init();
+  MX_I2C1_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-	/*CS(OFF);
-	HAL_Delay (1000);
-	CS(ON);
-	HAL_Delay (1000);*/
 	timers_ini ();
 	ssd1306_Init();
-//	default_screen_mode (&Font_16x26);
+	Pos_Enc1 = ReadData_From_EEPROM();
+	default_screen_mode (&Font_16x26, &Pos_Enc1);
+	
+/*	#ifdef __USE_DBG
+	sprintf ((char *)DBG_buffer,  "curr=%d prev=%d\r\n", Pos_Enc1.currCounter_SetAngle, Pos_Enc1.prevCounter_SetAngle);
+	DBG_PutString(DBG_buffer);
+	#endif	*/
+	
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -113,8 +123,26 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		default_screen_mode (&Font_16x26);
-		HAL_Delay (1000);
+		if ((key_code = scan_keys()) != NO_KEY)
+		{
+			switch (key_code) //обработка кода нажатой кнопки
+			{					
+				case KEY_ENC_SHORT:					//короткое нажатие кнопки энкодера
+					SaveData_In_EEPROM (&Pos_Enc1);
+					break;
+				
+				case KEY_ENC_LONG: 	
+					Pos_Enc1 = ReadData_From_EEPROM();
+					break;
+				
+				default:
+					key_code = NO_KEY;
+					break;
+			}
+		}
+		if (read_encoder1_rotation (&Pos_Enc1) == ON)
+		{	default_screen_mode (&Font_16x26, &Pos_Enc1); }
+		HAL_Delay (10);
   }
   /* USER CODE END 3 */
 }

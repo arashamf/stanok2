@@ -36,10 +36,14 @@ extern "C" {
 
 /* USER CODE END Private defines */
 
-void MX_UART5_Init(void);
+void MX_USART3_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+void DBG_PutString(const char *);
 
+#ifdef __USE_DBG
+extern char DBG_buffer[];
+#endif
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

@@ -29,18 +29,19 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f1xx_hal.h"
 
+#include "stm32f1xx_ll_dma.h"
 #include "stm32f1xx_ll_i2c.h"
+#include "stm32f1xx_ll_spi.h"
 #include "stm32f1xx_ll_tim.h"
 #include "stm32f1xx_ll_usart.h"
 #include "stm32f1xx_ll_rcc.h"
-#include "stm32f1xx_ll_system.h"
-#include "stm32f1xx_ll_gpio.h"
-#include "stm32f1xx_ll_exti.h"
 #include "stm32f1xx_ll_bus.h"
+#include "stm32f1xx_ll_system.h"
+#include "stm32f1xx_ll_exti.h"
 #include "stm32f1xx_ll_cortex.h"
 #include "stm32f1xx_ll_utils.h"
 #include "stm32f1xx_ll_pwr.h"
-#include "stm32f1xx_ll_dma.h"
+#include "stm32f1xx_ll_gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -108,13 +109,16 @@ void Error_Handler(void);
 #define EEPROM_SDA_Pin LL_GPIO_PIN_9
 #define EEPROM_SDA_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
+#define __USE_DBG
+#define __SPI_DMA_MODE
+
 #define ON 												1
 #define OFF 											0
 #define FORWARD 									1
 #define BACKWARD 									0
 #define DISP_CLEAR 								1
 #define DISP_NOT_CLEAR 						0
-#define EEPROM_NUMBER_BYTES 			14
+#define EEPROM_NUMBER_BYTES 			4
 
 #define CPU_CLOCK_VALUE			(72000000UL)	// Дастота контроллера //
 #define TICKS_PER_SECOND		1000 

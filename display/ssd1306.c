@@ -4,6 +4,8 @@
 #include "ssd1306_interface.h"
 #include "tim.h"
 #include "gpio.h"
+#include "usart.h"
+#include "typedef.h"
 // Declarations and definitions -------------------------------------------------------//
 
 // Private SSD1306 structure  ---------------------------------------------------------//
@@ -17,70 +19,57 @@ typedef struct
 
 // Private variables -----------------------------------------------------------------//
 static SSD1306_t SSD1306;
-static uint8_t SSD1306_Buffer[SSD1306_BUFFER_SIZE];
-
+uint8_t SSD1306_Buffer[SSD1306_BUFFER_SIZE];
 uint8_t LCD_buff[LCD_BUFFER_SIZE];
 
 // Functions -------------------------------------------------------------------------//
 void ssd1306_Init(void)
 {   
-//	CS(OFF);
 	LCD_RESET(OFF);
-	delay_us(5000);	
+	delay_us(3000);	
   LCD_RESET(ON);
-	delay_us(5000);	
-//	CS(ON);
+	delay_us(3000);	
 	
+	CS(ON);
 	ssd1306_SendCommand(DISPLAYOFF); 		//display off
-	ssd1306_SendCommand(MEMORYMODE); 	//Set Memory Addressing Mode   
-	ssd1306_SendCommand(HORIZONTALMODE); //00,Horizontal Addressing Mode;01,Vertical Addressing Mode;10,Page Addressing Mode (RESET);11,Invalid
-/*
-  // Set column address
-	ssd1306_SendCommand(COLUMNADDR); //
-	ssd1306_SendCommand(0); //
-	ssd1306_SendCommand(127); //
-	
-	// Set page address
-	ssd1306_SendCommand(PAGEADDR ); //
-	ssd1306_SendCommand(0); //
-	ssd1306_SendCommand(3); //
-*/
-	ssd1306_SendCommand(STARTPAGEADDR); //Set Page Start Address for Page Addressing Mode,0-7
-	ssd1306_SendCommand(COMSCANDEC); //Set COM Output Scan Direction
-	
-	ssd1306_SendCommand(SETLOWCOLUMN); //---set low column address
-	ssd1306_SendCommand(SETHIGHCOLUMN); //---set high column address
-	ssd1306_SendCommand(SETSTARTLINE); //--set start line address
-	
-	ssd1306_SendCommand(SETCONTRAST); //--set contrast control register
+	ssd1306_SendCommand(SETCONTRAST); //set contrast control register
 	ssd1306_SendCommand(0xFF);
+	ssd1306_SendCommand(NORMALDISPLAY); //set normal display
+	ssd1306_SendCommand(DISPLAYALLON_RESUME); //0xA4-возобновить отображение содержимого RAM;0xA5- полное включение дисплея, вывод игнорирует содержимое RAM		
 	
-	ssd1306_SendCommand(SETSEGREMAP+0x01); //--set segment re-map 0 to 127 
-	ssd1306_SendCommand(NORMALDISPLAY); //--set normal display
+	/*ssd1306_SendCommand(MEMORYMODE); 	//Set Memory Addressing Mode, 0x20   
+	ssd1306_SendCommand(HORIZONTALMODE); //00,Horizontal Addressing Mode;01,Vertical Addressing Mode;10,Page Addressing Mode (RESET);11,Invalid
+	ssd1306_SendCommand(COLUMNADDR); //Настройка адреса начального и конечного столбца. только для режимов горизонтальной или вертикальной адресации
+	ssd1306_SendCommand(0x00);
+	ssd1306_SendCommand(0x7F);
+	ssd1306_SendCommand(PAGESADDR); //Настройка адреса начальной и конечной страницы. только для режимов горизонтальной или вертикальной адресации
+	ssd1306_SendCommand(0x00);
+	ssd1306_SendCommand(0x03);*/
 	
-	ssd1306_SendCommand(SETMULTIPLEX); //--set multiplex ratio(1 to 64)
-	ssd1306_SendCommand(0x1F); //128x32
+	ssd1306_SendCommand(MEMORYMODE); 	//Set Memory Addressing Mode, 0x20   
+	ssd1306_SendCommand(PAGEMODE); //00,Horizontal Addressing Mode;01,Vertical Addressing Mode;10,Page Addressing Mode (RESET);11,Invalid
+	ssd1306_SendCommand(STARTPAGEADDR); //Set Page Start Address for Page Addressing Mode,0xB0-0xB7 (эта команда применяется только дляPage Addressing Mode) 
+	ssd1306_SendCommand(SETLOWCOLUMN); //set low column address, 0x00 (эта команда применяется только дляPage Addressing Mode) 
+	ssd1306_SendCommand(SETHIGHCOLUMN); //set high column address, 0x10 (эта команда применяется только дляPage Addressing Mode) 
 	
-	ssd1306_SendCommand(0xA4); //0xA4-output follows RAM content;0xA5-output ignores RAM content
-	
+	ssd1306_SendCommand(SETSTARTLINE); //Устанавливает регистр начальной строки в диапазоне 0..63 (0x40)	
+	ssd1306_SendCommand(SETSEGREMAP+0x01); //--set segment re-map 0 to 127 	
+	ssd1306_SendCommand(SETMULTIPLEX); //Установка коэффициента мультиплексирования (1 to 64)
+	ssd1306_SendCommand(0x1F); //32 (128x32)
+	ssd1306_SendCommand(COMSCANDEC); //Set COM Output Scan Direction. 0xC8: remapped mode, сканирование от COM[N-1] до COM0
 	ssd1306_SendCommand(SETDISPLAYOFFSET); //-set display offset
 	ssd1306_SendCommand(0x00); //-not offset
-	
-	ssd1306_SendCommand(SETDISPLAYCLOCKDIV); //--set display clock divide ratio/oscillator frequency
-	ssd1306_SendCommand(SETDIVIDERATIO); //--set divide ratio
-	
-	ssd1306_SendCommand(SETPRECHARGE); //--set pre-charge period
-	ssd1306_SendCommand(0x22); //
-	
-	ssd1306_SendCommand(SETCOMPINS); //--set com pins hardware configuration
-	ssd1306_SendCommand(0x12); //128x64
-//	ssd1306_SendCommand(0x02); //128x32
-	
-	ssd1306_SendCommand(SETVCOMDETECT); 	//--set vcomh
-	ssd1306_SendCommand(SWITCHCAPVCC); 		//
-	
-//	ssd1306_SendCommand(CHARGEPUMP); //--set DC-DC enable
-//	ssd1306_SendCommand(0x14); 			//
+	ssd1306_SendCommand(SETCOMPINS); //set com pins hardware configuration
+	ssd1306_SendCommand(0x12); //альтернативная конфигурация выводов COM
+
+	ssd1306_SendCommand(SETDISPLAYCLOCKDIV); //[3:0] определение коэффициента деления (D) для тактов дисплея (DCLK). Коэффициент деления = A[3:0]+1. Значение по умолчанию 0, что соответствует коэффициенту 1.
+	//7:4] установка частоты генератора FOSC. Чем больше значение A[7:4], тем выше частота генератора. Значение по умолчанию после сброса 8, допустимый диапазон 0..15.
+	ssd1306_SendCommand(SETDIVIDERATIO); //коэффициенту деления = 1, FOSC-максимальная
+	//ssd1306_SendCommand(SETPRECHARGE); //установка периода Phase 1 и Phase 2
+	//ssd1306_SendCommand(0x22); //	
+	ssd1306_SendCommand(SETVCOMDETECT); 	//set Vcomh Deselect Level
+	ssd1306_SendCommand(0x20); 		//~ 0.77·VCC
+
 	ssd1306_SendCommand(DISPLAYON); //--turn on SSD1306 panel
 	
 	delay_us(5000);
@@ -179,8 +168,9 @@ char SSD1306_Putc(char ch, FontDef_t* Font, SSD1306_COLOR_t color)
 	return ch; 	// Return character written 
 }
 
-//-----------------------------------------------------------------------------------------------//
-char SSD1306_Puts(uint8_t* str, FontDef_t* Font, SSD1306_COLOR_t color) {
+//---------------------------------заполнение буффера для дисплея---------------------------------//
+char SSD1306_Puts(uint8_t* str, FontDef_t* Font, SSD1306_COLOR_t color) 
+{
 	while (*str) 
 	{
 		if (SSD1306_Putc(*str, Font, color) != *str) 
@@ -190,18 +180,29 @@ char SSD1306_Puts(uint8_t* str, FontDef_t* Font, SSD1306_COLOR_t color) {
 	return *str; // Everything OK, zero should be returned 
 }
 
-//-----------------------------------------------------------------------------------------------//
+//-----------------------------------отправка буффера в дисплей-----------------------------------//
 void SSD1306_UpdateScreen(void) 
 {
-	uint8_t m;
-	
+	uint8_t m = 0;
+	#ifdef __SPI_DMA_MODE	 
+	ssd1306_SendDataBuffer (SSD1306_Buffer,  SSD1306_BUFFER_SIZE);
+	#else
 	for (m = 0; m < 4; m++)  
-	{    
-		SSD1306_WRITECOMMAND(0xB0 + m);
-		SSD1306_WRITECOMMAND(0x00);
-		SSD1306_WRITECOMMAND(0x10);
-		ssd1306_SendDataBuffer (&SSD1306_Buffer[SSD1306_X_SIZE * m-4], SSD1306_X_SIZE ); 	// Write multi data 
+	{ 
+		SSD1306_PageAdress(m);
+		ssd1306_SendDataBuffer (&SSD1306_Buffer[(SSD1306_X_SIZE*m) - 4], (SSD1306_BUFFER_SIZE/4)); 	// Write multi data 
 	}
+	#endif
+}
+
+//-----------------------------------посылка адреса страницы-----------------------------------//
+void SSD1306_PageAdress(uint8_t i) 
+{
+		CS(ON);
+		SSD1306_WRITECOMMAND(0xB0 + i); //Установка битами X[2:0] адреса начальной страницы RAM (PAGE0~PAGE7) для Page Addressing Mode
+		SSD1306_WRITECOMMAND(0x00); //Устанавка младшего ниббла регистра начального адреса столбца для режима адресации страниц (Page Addressing Mode) 
+		SSD1306_WRITECOMMAND(0x10); //Устанавка старшего ниббла регистра начального адреса столбца
+	//  CS(OFF);
 }
 
 //-----------------------------------------------------------------------------------------------//
@@ -507,11 +508,27 @@ void SSD1306_DrawFilledCircle(int16_t x0, int16_t y0, int16_t r, SSD1306_COLOR_t
 }
 
 //-----------------------------------------------------------------------------------------------//
-void default_screen_mode (FontDef_t * font)
+void debug_screen_mode (FontDef_t * font, uint8_t * buf)
 {
 	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
-	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "1010");
-	//SSD1306_PutString (LCD_buff , font, SSD1306_COLOR_WHITE);
+	SSD1306_Clear_Screen ();
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "%x %x %x %x", *buf+0, *buf+1, *buf+2, *buf+3);
+	SSD1306_Puts (LCD_buff , font, SSD1306_COLOR_WHITE);
+	SSD1306_UpdateScreen();
+}
+
+//-----------------------------------------------------------------------------------------------//
+void default_screen_mode (FontDef_t * font, encoder_data_t * HandleEncData)
+{
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
+	SSD1306_Clear_Screen ();
+	
+	/*#ifdef __USE_DBG
+	sprintf ((char *)DBG_buffer,  "screen:curr=%d prev=%d\r\n", HandleEncData->currCounter_SetAngle, HandleEncData->prevCounter_SetAngle);
+	DBG_PutString(DBG_buffer);
+	#endif	*/
+	
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "%05d", HandleEncData->currCounter_SetAngle);
 	SSD1306_Puts (LCD_buff , font, SSD1306_COLOR_WHITE);
 	SSD1306_UpdateScreen();
 }

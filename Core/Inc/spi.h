@@ -32,8 +32,6 @@ extern "C" {
 
 /* USER CODE END Includes */
 
-extern SPI_HandleTypeDef hspi2;
-
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
@@ -42,7 +40,10 @@ void MX_SPI2_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 void spi_write_byte (uint8_t );
-void spi_write_buffer (uint8_t * , uint8_t );
+void spi_write_buffer (uint8_t * , uint16_t );
+void spi_write_buffer_DMA (void);
+void DMA1_Channel5_TransferComplete(void);
+void DMA1_Channel5_Callback(void);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

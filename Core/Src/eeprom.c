@@ -3,38 +3,70 @@
 #include "eeprom.h"
 #include "i2c.h"
 #include "angle_calc.h"
-
-// Functions -------------------------------------------------------------------//
-
+#include "typedef.h"
+//#include "ssd1306.h"
+#include "usart.h"
 // Defines ---------------------------------------------------------------------//
-#define EEPROM_I2C1_ADDRESS     	0xA0	 // A0 = A1 = A2 = 0                                        
-#define I2C_REQUEST_WRITE       	0x00
-#define I2C_REQUEST_READ        	0x01
-#define EEPROM_I2C_TIMEOUT    		0xFF
+#define 	EEPROM_MEMORY_PAGE 	0x0001                                    
 
 // Private typedef ------------------------------------------------------------//
-//extern I2C_HandleTypeDef hi2c1;
 
 // Private variables ---------------------------------------------------------//
-uint8_t eeprom_tx_buffer[EEPROM_NUMBER_BYTES+1] = {0} ;
+uint8_t EEPROM_TX_Buf[EEPROM_NUMBER_BYTES+1] = {0} ;
+uint8_t EEPROM_RX_Buf[EEPROM_NUMBER_BYTES+1] = {0} ;
 
-//---------------------------------------------------------------------//
-void EEPROM_WriteBytes (uint16_t registr, uint8_t *buf, uint16_t bytes_count)
+// Functions -------------------------------------------------------------------//
+static void EEPROM_WriteBytes	(uint16_t, uint8_t*, uint16_t);
+static void EEPROM_ReadBytes	(uint16_t, uint8_t*, uint16_t); 
+
+//--------------------------------------------------------------------------------------//
+static void EEPROM_WriteBuffer (uint16_t registr, uint8_t *buf, uint16_t bytes_count)
 {
-	//HAL_I2C_Mem_Write (&hi2c1, EEPROM_I2C1_ADDRESS, registr, 2, buf, bytes_count, EEPROM_I2C_TIMEOUT);
-//	i2c_write_buffer_16bit_registr (EEPROM_I2C1_ADDRESS, registr, buf, bytes_count);
+	I2C_WriteBuffer (registr, buf, bytes_count);
 }
 
-//------------------------------------------------------------------------------------------------//
-void EEPROM_ReadBytes (uint16_t registr, uint8_t *buf, uint16_t bytes_count)
+//--------------------------------------------------------------------------------------//
+static void EEPROM_ReadBuffer (uint16_t registr, uint8_t *buf, uint16_t bytes_count)
 {  
-	//HAL_I2C_Mem_Read (&hi2c1, EEPROM_I2C1_ADDRESS, addr, 2, buf, bytes_count, EEPROM_I2C_TIMEOUT);
-	//	i2c_read_array(EEPROM_I2C1_ADDRESS, registr, buf, bytes_count);
+	I2C_ReadBuffer (registr, buf, bytes_count);
 }
 
-//------------------------------------------------------------------------------------------------//
-void SaveData_In_EEPROM (angular_data_t * ang_handle, uint8_t * tx_buffer, uint8_t number)
+//--------------------------------------------------------------------------------------//
+void SaveData_In_EEPROM (encoder_data_t * handle_Data)
 {
-	angle_to_EEPROMbuf (ang_handle,tx_buffer); //cохранение в буфере EEPROM текущих данных угла вала
-	EEPROM_WriteBytes (EEPROM_MEMORY_PAGE, tx_buffer, number); //запись 8 байт
+	uint8_t count = sizeof(handle_Data->currCounter_SetAngle);
+	for (uint8_t i = 0; i < count; i++)
+	{
+		EEPROM_TX_Buf[i] = (uint8_t)(handle_Data->prevCounter_SetAngle >> (8*i));
+	}	
+	
+	I2C_WriteBuffer (EEPROM_MEMORY_PAGE, EEPROM_TX_Buf, count);
+
+	#ifdef __USE_DBG
+	sprintf ((char *)DBG_buffer,  "WRITE:%d %d\r\n", handle_Data->currCounter_SetAngle, handle_Data->prevCounter_SetAngle);
+	DBG_PutString(DBG_buffer);
+	#endif	
 }
+
+//--------------------------------------------------------------------------------------//
+encoder_data_t ReadData_From_EEPROM (void)
+{
+	encoder_data_t  Enc_Data = {0};
+	encoder_data_t * handle_Enc = &Enc_Data;
+	uint8_t count = sizeof(Enc_Data.currCounter_SetAngle);
+	
+	I2C_ReadBuffer (EEPROM_MEMORY_PAGE, EEPROM_RX_Buf, count);
+	for (uint8_t i = 0; i < count; i++)
+	{
+		Enc_Data.currCounter_SetAngle |= (((uint32_t)*(EEPROM_RX_Buf+i)) << (8*i));
+	}	
+	Enc_Data.prevCounter_SetAngle = Enc_Data.currCounter_SetAngle;
+	
+	#ifdef __USE_DBG
+	sprintf ((char *)DBG_buffer,  "READ:%d %d\r\n",Enc_Data.currCounter_SetAngle, Enc_Data.prevCounter_SetAngle);
+	DBG_PutString(DBG_buffer);
+	#endif	
+	
+	return Enc_Data;
+}
+

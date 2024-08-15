@@ -10,22 +10,6 @@ extern "C" {
 #include "main.h"
 
 // Exported types ---------------------------------------------------------------//
-typedef struct 
-{
-	//сохранение шага хода вала в формате гр/мин/сек/
-	uint16_t 	set_degree; 			//часть установленного шага вала в градусах
-	int8_t 		set_minute; 			//часть установленного шага вала в минутах
-	int8_t 		set_second; 			 //часть установленного шага вала в секундах
-	//текущее положение вала в формате гр/мин/сек/
-	uint16_t 	shaft_degree; 		//часть текущего положения вала в градусах
-	int8_t 		shaft_minute; 		//часть текущего положения  вала в минутах
-	int8_t 		shaft_second; 		//часть текущего положения  вала в секундах
-	
-	uint32_t 	StepAngleInSec;				//полный установленный шаг вала в секундах
-	uint32_t 	ShaftAngleInSec; 			//полное текущее положение вала в секундах
-	uint32_t 	SetShaftAngleInSec; 	//установленное положение вала в секундах
-	float mode1_error;
-} angular_data_t;
 
 typedef struct 
 {
@@ -34,27 +18,7 @@ typedef struct
 	int32_t 	prevCounter_ShaftRotation;  //сохранённое показание энкодера
 	int32_t 	currCounter_ShaftRotation;	//текущее показание энкодера
 	int32_t delta;
-//	int8_t 		flag_DirShaftRotation;
 } encoder_data_t;
-
-//------------------------------------------------------------------------------------//
-typedef struct 
-{
-	uint8_t 	teeth_gear_numbers; //установленное количество зубьев
-	uint8_t 	remain_teeth_gear; //оставшееся количество зубьев
-	uint16_t 	step_shaft_degree; //часть угла поворота вала в режиме фрезеровки в градусах
-	int8_t 		step_shaft_minute; //часть угла поворота вала в режиме фрезеровки в минутах
-	int8_t 		step_shaft_second; //часть угла поворота вала в режиме фрезеровки в секундах
-	uint32_t 	AngleTeethInSec; //угол поворота в режиме фрезеровки в секундах
-	float milling_error;
-} milling_data_t;
-
-//----------------------------------------------------------------------------------//
-typedef enum 
-{
-	MODE_DEFAULT 				= 0,				//режим - по умолчанию
-	MODE_MILLING										//режим - фрезеровка
-} MACHINE_MODE_t; 	
 
 //----------------------------------------------------------------------------------//
 typedef union
@@ -101,6 +65,10 @@ struct KEY_MACHINE_t
 };
 
 // Defines ----------------------------------------------------------------------//
+#define 	I2C_REQUEST_WRITE                       0x00
+#define 	I2C_REQUEST_READ                        0x01
+#define 	SLAVE_OWN_ADDRESS                       0xA0
+
 #define   REDUCER 						40 //делитель редуктора
 #define 	STEPS_IN_REV				20000 	//количество микрошагов в одном полном обороте (360 гр) с учётом делителя драйвера
 #define 	CIRCLE_IN_STEP			200		 //количество шагов (1,8гр) в одном полном обороте (360 гр)

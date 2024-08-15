@@ -21,7 +21,19 @@
 #include "tim.h"
 
 /* USER CODE BEGIN 0 */
+#define 	TIM_DELAY_us 										TIM7
+#define 	TIM_DELAY_us_APB1_BIT 					LL_APB1_GRP1_PERIPH_TIM7
+
+#define 	TIM_BOUNCE_DELAY 								TIM6
+#define 	TIM_BOUNCE_DELAY_APB1_BIT 			LL_APB1_GRP1_PERIPH_TIM6
+#define  	TIM_BOUNCE_DELAY_IRQn           TIM6_IRQn
+#define		TIM_BOUNCE_DELAY_IRQHandler			TIM6_IRQHandler
 uint8_t end_bounce = 0;
+
+static void encoder1_init(void);
+static void encoder2_init(void) ;
+static void tim_delay_init (void);
+static void timer_bounce_init (void);
 /* USER CODE END 0 */
 
 /* TIM1 init function */
@@ -120,11 +132,11 @@ void MX_TIM2_Init(void)
   LL_TIM_SetEncoderMode(TIM2, LL_TIM_ENCODERMODE_X2_TI1);
   LL_TIM_IC_SetActiveInput(TIM2, LL_TIM_CHANNEL_CH1, LL_TIM_ACTIVEINPUT_DIRECTTI);
   LL_TIM_IC_SetPrescaler(TIM2, LL_TIM_CHANNEL_CH1, LL_TIM_ICPSC_DIV1);
-  LL_TIM_IC_SetFilter(TIM2, LL_TIM_CHANNEL_CH1, LL_TIM_IC_FILTER_FDIV1);
+  LL_TIM_IC_SetFilter(TIM2, LL_TIM_CHANNEL_CH1, LL_TIM_IC_FILTER_FDIV1_N2);
   LL_TIM_IC_SetPolarity(TIM2, LL_TIM_CHANNEL_CH1, LL_TIM_IC_POLARITY_RISING);
   LL_TIM_IC_SetActiveInput(TIM2, LL_TIM_CHANNEL_CH2, LL_TIM_ACTIVEINPUT_DIRECTTI);
   LL_TIM_IC_SetPrescaler(TIM2, LL_TIM_CHANNEL_CH2, LL_TIM_ICPSC_DIV1);
-  LL_TIM_IC_SetFilter(TIM2, LL_TIM_CHANNEL_CH2, LL_TIM_IC_FILTER_FDIV1);
+  LL_TIM_IC_SetFilter(TIM2, LL_TIM_CHANNEL_CH2, LL_TIM_IC_FILTER_FDIV1_N4);
   LL_TIM_IC_SetPolarity(TIM2, LL_TIM_CHANNEL_CH2, LL_TIM_IC_POLARITY_RISING);
   TIM_InitStruct.Prescaler = 0;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
@@ -170,11 +182,11 @@ void MX_TIM3_Init(void)
   LL_TIM_SetEncoderMode(TIM3, LL_TIM_ENCODERMODE_X2_TI1);
   LL_TIM_IC_SetActiveInput(TIM3, LL_TIM_CHANNEL_CH1, LL_TIM_ACTIVEINPUT_DIRECTTI);
   LL_TIM_IC_SetPrescaler(TIM3, LL_TIM_CHANNEL_CH1, LL_TIM_ICPSC_DIV1);
-  LL_TIM_IC_SetFilter(TIM3, LL_TIM_CHANNEL_CH1, LL_TIM_IC_FILTER_FDIV1);
+  LL_TIM_IC_SetFilter(TIM3, LL_TIM_CHANNEL_CH1, LL_TIM_IC_FILTER_FDIV1_N8);
   LL_TIM_IC_SetPolarity(TIM3, LL_TIM_CHANNEL_CH1, LL_TIM_IC_POLARITY_RISING);
   LL_TIM_IC_SetActiveInput(TIM3, LL_TIM_CHANNEL_CH2, LL_TIM_ACTIVEINPUT_DIRECTTI);
   LL_TIM_IC_SetPrescaler(TIM3, LL_TIM_CHANNEL_CH2, LL_TIM_ICPSC_DIV1);
-  LL_TIM_IC_SetFilter(TIM3, LL_TIM_CHANNEL_CH2, LL_TIM_IC_FILTER_FDIV1);
+  LL_TIM_IC_SetFilter(TIM3, LL_TIM_CHANNEL_CH2, LL_TIM_IC_FILTER_FDIV2_N6);
   LL_TIM_IC_SetPolarity(TIM3, LL_TIM_CHANNEL_CH2, LL_TIM_IC_POLARITY_RISING);
   TIM_InitStruct.Prescaler = 0;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
@@ -189,120 +201,96 @@ void MX_TIM3_Init(void)
   /* USER CODE END TIM3_Init 2 */
 
 }
-/* TIM4 init function */
-void MX_TIM4_Init(void)
-{
-
-  /* USER CODE BEGIN TIM4_Init 0 */
-
-  /* USER CODE END TIM4_Init 0 */
-
-  LL_TIM_InitTypeDef TIM_InitStruct = {0};
-
-  LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-  /* Peripheral clock enable */
-  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM4);
-
-  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_GPIOB);
-  /**TIM4 GPIO Configuration
-  PB6   ------> TIM4_CH1
-  PB7   ------> TIM4_CH2
-  */
-  GPIO_InitStruct.Pin = LL_GPIO_PIN_6|LL_GPIO_PIN_7;
-  GPIO_InitStruct.Mode = LL_GPIO_MODE_FLOATING;
-  LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /* USER CODE BEGIN TIM4_Init 1 */
-
-  /* USER CODE END TIM4_Init 1 */
-  LL_TIM_SetEncoderMode(TIM4, LL_TIM_ENCODERMODE_X2_TI1);
-  LL_TIM_IC_SetActiveInput(TIM4, LL_TIM_CHANNEL_CH1, LL_TIM_ACTIVEINPUT_DIRECTTI);
-  LL_TIM_IC_SetPrescaler(TIM4, LL_TIM_CHANNEL_CH1, LL_TIM_ICPSC_DIV1);
-  LL_TIM_IC_SetFilter(TIM4, LL_TIM_CHANNEL_CH1, LL_TIM_IC_FILTER_FDIV1);
-  LL_TIM_IC_SetPolarity(TIM4, LL_TIM_CHANNEL_CH1, LL_TIM_IC_POLARITY_RISING);
-  LL_TIM_IC_SetActiveInput(TIM4, LL_TIM_CHANNEL_CH2, LL_TIM_ACTIVEINPUT_DIRECTTI);
-  LL_TIM_IC_SetPrescaler(TIM4, LL_TIM_CHANNEL_CH2, LL_TIM_ICPSC_DIV1);
-  LL_TIM_IC_SetFilter(TIM4, LL_TIM_CHANNEL_CH2, LL_TIM_IC_FILTER_FDIV1);
-  LL_TIM_IC_SetPolarity(TIM4, LL_TIM_CHANNEL_CH2, LL_TIM_IC_POLARITY_RISING);
-  TIM_InitStruct.Prescaler = 0;
-  TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-  TIM_InitStruct.Autoreload = 65535;
-  TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
-  LL_TIM_Init(TIM4, &TIM_InitStruct);
-  LL_TIM_DisableARRPreload(TIM4);
-  LL_TIM_SetTriggerOutput(TIM4, LL_TIM_TRGO_RESET);
-  LL_TIM_DisableMasterSlaveMode(TIM4);
-  /* USER CODE BEGIN TIM4_Init 2 */
-
-  /* USER CODE END TIM4_Init 2 */
-
-}
 
 /* USER CODE BEGIN 1 */
 //-------------------------------------------------------------------------------------------------//
-void tim_delay_init (void)
+static void encoder1_init(void) 
+{
+    
+  LL_TIM_SetCounter(TIM3, 32767); // начальное значение счетчика:
+	
+	LL_TIM_CC_EnableChannel(TIM3,LL_TIM_CHANNEL_CH1); //Enable the encoder interface channels 
+	LL_TIM_CC_EnableChannel(TIM3,LL_TIM_CHANNEL_CH2);
+
+  LL_TIM_EnableCounter(TIM3);     // включение таймера
+}
+
+//-------------------------------------------------------------------------------------------------//
+static void encoder2_init(void) 
+{
+    
+  LL_TIM_SetCounter(TIM2, 32767); // начальное значение счетчика:
+	
+	LL_TIM_CC_EnableChannel(TIM2,LL_TIM_CHANNEL_CH1); //Enable the encoder interface channels 
+	LL_TIM_CC_EnableChannel(TIM2,LL_TIM_CHANNEL_CH2);
+
+  LL_TIM_EnableCounter(TIM2);     // включение таймера
+}
+
+
+//------------------------------------------------------------------------------------------------//
+static void tim_delay_init (void)
 {
 	LL_TIM_InitTypeDef TIM_InitStruct = {0};
 
-  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM7);   // Peripheral clock enable 
+  LL_APB1_GRP1_EnableClock(TIM_DELAY_us_APB1_BIT );   // Peripheral clock enable 
 
   TIM_InitStruct.Prescaler = (uint16_t)((CPU_CLOCK_VALUE/1000000)-1); //предделитель 72МГц/72=1МГц
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
   TIM_InitStruct.Autoreload = 0xFF;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
-  LL_TIM_Init(TIM7, &TIM_InitStruct);
-  LL_TIM_DisableARRPreload(TIM7);
+  LL_TIM_Init(TIM_DELAY_us, &TIM_InitStruct);
+  LL_TIM_DisableARRPreload(TIM_DELAY_us);
 }
 
 //-------------------------------------------------------------------------------------------------//
 void delay_us(uint16_t delay)
 {
-  LL_TIM_SetAutoReload(TIM7, delay); //
-	LL_TIM_ClearFlag_UPDATE(TIM7); //сброс флага обновления таймера
-	LL_TIM_SetCounter(TIM7, 0); //сброс счётного регистра
-	LL_TIM_EnableCounter(TIM7); //включение таймера
-	while (LL_TIM_IsActiveFlag_UPDATE(TIM7) == 0) {} //ожидание установки флага обновления таймера 
-	LL_TIM_DisableCounter(TIM7); //выключение таймера		
+  LL_TIM_SetAutoReload(TIM_DELAY_us, delay); //
+	LL_TIM_ClearFlag_UPDATE(TIM_DELAY_us); //сброс флага обновления таймера
+	LL_TIM_SetCounter(TIM_DELAY_us, 0); //сброс счётного регистра
+	LL_TIM_EnableCounter(TIM_DELAY_us); //включение таймера
+	while (LL_TIM_IsActiveFlag_UPDATE(TIM_DELAY_us) == 0) {} //ожидание установки флага обновления таймера 
+	LL_TIM_DisableCounter(TIM_DELAY_us); //выключение таймера		
 }
 
 //-------------------------------------------------------------------------------------------------//
-void timer_bounce_init (void)
+static void timer_bounce_init (void)
 {
 	LL_TIM_InitTypeDef TIM_InitStruct = {0};
 
-  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM6);   // Peripheral clock enable 
+  LL_APB1_GRP1_EnableClock(TIM_BOUNCE_DELAY_APB1_BIT);   // Peripheral clock enable 
 
   TIM_InitStruct.Prescaler = (uint16_t)((CPU_CLOCK_VALUE/2000)-1); //предделитель 48МГц/24000=2КГц
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
   TIM_InitStruct.Autoreload = 0xFFFF;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
   TIM_InitStruct.RepetitionCounter = 0;
-  LL_TIM_Init(TIM6, &TIM_InitStruct);
-  LL_TIM_DisableARRPreload(TIM6);	
+  LL_TIM_Init(TIM_BOUNCE_DELAY, &TIM_InitStruct);
+  LL_TIM_DisableARRPreload(TIM_BOUNCE_DELAY);	
 	
-	LL_TIM_ClearFlag_UPDATE(TIM6); //сброс флага обновления таймера
-	LL_TIM_EnableIT_UPDATE(TIM6);
-	NVIC_SetPriority(TIM6_IRQn, 0);
-  NVIC_EnableIRQ(TIM6_IRQn);
+	LL_TIM_ClearFlag_UPDATE(TIM_BOUNCE_DELAY); //сброс флага обновления таймера
+	LL_TIM_EnableIT_UPDATE(TIM_BOUNCE_DELAY);
+	NVIC_SetPriority(TIM_BOUNCE_DELAY_IRQn, 0);
+  NVIC_EnableIRQ(TIM_BOUNCE_DELAY_IRQn);
 }
 
 //-------------------------------------------------------------------------------------------------//
 void repeat_time (uint16_t delay)
 {
-  LL_TIM_SetAutoReload(TIM6, 2*delay); //
-	LL_TIM_SetCounter(TIM6, 0); //сброс счётного регистра
-	LL_TIM_ClearFlag_UPDATE(TIM6); //сброс флага обновления таймера
-	LL_TIM_EnableCounter(TIM6); //включение таймера	
+  LL_TIM_SetAutoReload(TIM_BOUNCE_DELAY, 2*delay); //
+	LL_TIM_SetCounter(TIM_BOUNCE_DELAY, 0); //сброс счётного регистра
+	LL_TIM_ClearFlag_UPDATE(TIM_BOUNCE_DELAY); //сброс флага обновления таймера
+	LL_TIM_EnableCounter(TIM_BOUNCE_DELAY); //включение таймера	
 }
 
 //-------------------------------------------------------------------------------------------------//
-void TIM16_IRQHandler(void)
+void TIM_BOUNCE_DELAY_IRQHandler(void)
 {
-	if (LL_TIM_IsActiveFlag_UPDATE(TIM6) == SET)
+	if (LL_TIM_IsActiveFlag_UPDATE(TIM_BOUNCE_DELAY) == SET)
 	{	
-		LL_TIM_ClearFlag_UPDATE (TIM6); //сброс флага обновления таймера
-		LL_TIM_DisableCounter(TIM6); //выключение таймера
+		LL_TIM_ClearFlag_UPDATE (TIM_BOUNCE_DELAY); //сброс флага обновления таймера
+		LL_TIM_DisableCounter(TIM_BOUNCE_DELAY); //выключение таймера
 		end_bounce = SET; //установка флага окончания ожидания прекращения дребезга
 	}
 }
@@ -310,6 +298,8 @@ void TIM16_IRQHandler(void)
 //-------------------------------------------------------------------------------------------------//
 void timers_ini (void)
 {
+	encoder1_init();
+	encoder2_init();
 	tim_delay_init(); 		//инициализация TIM14 для микросекундных задержек
 	timer_bounce_init();	//инициализация TIM16	для отчёта задержек дребезга кнопок 							
 }
