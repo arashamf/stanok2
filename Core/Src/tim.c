@@ -21,6 +21,9 @@
 #include "tim.h"
 
 /* USER CODE BEGIN 0 */
+#include "typedef.h"
+#include "usart.h"
+
 #define 	TIM_DELAY_us 										TIM7
 #define 	TIM_DELAY_us_APB1_BIT 					LL_APB1_GRP1_PERIPH_TIM7
 
@@ -55,7 +58,7 @@ void MX_TIM1_Init(void)
   /* USER CODE BEGIN TIM1_Init 1 */
 
   /* USER CODE END TIM1_Init 1 */
-  TIM_InitStruct.Prescaler = 0;
+  TIM_InitStruct.Prescaler = 71;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
   TIM_InitStruct.Autoreload = 65535;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
@@ -73,9 +76,6 @@ void MX_TIM1_Init(void)
   TIM_OC_InitStruct.OCNIdleState = LL_TIM_OCIDLESTATE_LOW;
   LL_TIM_OC_Init(TIM1, LL_TIM_CHANNEL_CH1, &TIM_OC_InitStruct);
   LL_TIM_OC_DisableFast(TIM1, LL_TIM_CHANNEL_CH1);
-  LL_TIM_OC_EnablePreload(TIM1, LL_TIM_CHANNEL_CH2);
-  LL_TIM_OC_Init(TIM1, LL_TIM_CHANNEL_CH2, &TIM_OC_InitStruct);
-  LL_TIM_OC_DisableFast(TIM1, LL_TIM_CHANNEL_CH2);
   LL_TIM_SetTriggerOutput(TIM1, LL_TIM_TRGO_RESET);
   LL_TIM_DisableMasterSlaveMode(TIM1);
   TIM_BDTRInitStruct.OSSRState = LL_TIM_OSSR_DISABLE;
@@ -92,13 +92,12 @@ void MX_TIM1_Init(void)
   LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_GPIOA);
     /**TIM1 GPIO Configuration
     PA8     ------> TIM1_CH1
-    PA9     ------> TIM1_CH2
     */
-  GPIO_InitStruct.Pin = PULSE_MOTOR2_Pin|PULSE_MOTOR1_Pin;
+  GPIO_InitStruct.Pin = PULSE_MOTOR2_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-  LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  LL_GPIO_Init(PULSE_MOTOR2_GPIO_Port, &GPIO_InitStruct);
 
 }
 /* TIM2 init function */
@@ -261,7 +260,7 @@ static void timer_bounce_init (void)
 
   LL_APB1_GRP1_EnableClock(TIM_BOUNCE_DELAY_APB1_BIT);   // Peripheral clock enable 
 
-  TIM_InitStruct.Prescaler = (uint16_t)((CPU_CLOCK_VALUE/2000)-1); //предделитель 48ћ√ц/24000=2 √ц
+  TIM_InitStruct.Prescaler = (uint16_t)((CPU_CLOCK_VALUE/2000)-1); //предделитель 72ћ√ц/36000=2 √ц
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
   TIM_InitStruct.Autoreload = 0xFFFF;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
@@ -278,6 +277,7 @@ static void timer_bounce_init (void)
 //-------------------------------------------------------------------------------------------------//
 void repeat_time (uint16_t delay)
 {
+	end_bounce = RESET;	
   LL_TIM_SetAutoReload(TIM_BOUNCE_DELAY, 2*delay); //
 	LL_TIM_SetCounter(TIM_BOUNCE_DELAY, 0); //сброс счЄтного регистра
 	LL_TIM_ClearFlag_UPDATE(TIM_BOUNCE_DELAY); //сброс флага обновлени€ таймера
@@ -291,7 +291,7 @@ void TIM_BOUNCE_DELAY_IRQHandler(void)
 	{	
 		LL_TIM_ClearFlag_UPDATE (TIM_BOUNCE_DELAY); //сброс флага обновлени€ таймера
 		LL_TIM_DisableCounter(TIM_BOUNCE_DELAY); //выключение таймера
-		end_bounce = SET; //установка флага окончани€ ожидани€ прекращени€ дребезга
+		end_bounce = SET; //установка флага окончани€ ожидани€ прекращени€ дребезга		
 	}
 }
 
@@ -300,7 +300,7 @@ void timers_ini (void)
 {
 	encoder1_init();
 	encoder2_init();
-	tim_delay_init(); 		//инициализаци€ TIM14 дл€ микросекундных задержек
-	timer_bounce_init();	//инициализаци€ TIM16	дл€ отчЄта задержек дребезга кнопок 							
+	tim_delay_init(); 		//инициализаци€ TIM7 дл€ микросекундных задержек
+	timer_bounce_init();	//инициализаци€ TIM6	дл€ отчЄта задержек дребезга кнопок 							
 }
 /* USER CODE END 1 */

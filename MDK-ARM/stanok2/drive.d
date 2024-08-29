@@ -40,4 +40,6 @@ stanok2/drive.o: ..\Core\Src\drive.c ..\Core\Inc\drive.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_gpio.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h ..\Core\Inc\typedef.h \
-  ..\Core\Inc\gpio.h ..\Core\Inc\tim.h ..\Core\Inc\typedef.h
+  ..\Core\Inc\gpio.h ..\Core\Inc\tim.h ..\display\menu.h \
+  ..\Core\Inc\main.h ..\Core\Inc\typedef.h ..\display\fonts.h \
+  ..\Core\Inc\button.h ..\Core\Inc\eeprom.h

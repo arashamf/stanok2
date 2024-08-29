@@ -23,6 +23,7 @@
 /* USER CODE BEGIN 0 */
 #include "gpio.h"
 #include "ssd1306.h"
+#include "typedef.h"
 
 uint8_t count = 0;
 /* USER CODE END 0 */

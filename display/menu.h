@@ -1,6 +1,6 @@
 
-#ifndef __EEPROM_H__
-#define __EEPROM_H__
+#ifndef __MENU_H__
+#define __MENU_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -9,15 +9,14 @@ extern "C" {
 // Includes ---------------------------------------------------------------------//
 #include "main.h"
 #include "typedef.h"
+#include "fonts.h"
 
 // Defines ---------------------------------------------------------------------//
-#define 	EEPROM_MEMORY_PAGE 	0x0001
 
-// Prototypes -----------------------------------------------------------------//
-void SaveByte_In_EEPROM (uint8_t , uint8_t );
-void SaveCoilData (uint8_t * , uint8_t , uint8_t );
-void GetCoilData (uint8_t * , uint8_t , uint8_t);
 
+// Prototypes ------------------------------------------------------------------//
+void setup_menu (encoder_data_t *, coil_data_t * );
+void main_menu (coil_data_t * );
 // Variables ------------------------------------------------------------------//
 
 #ifdef __cplusplus

@@ -42,6 +42,10 @@ extern "C" {
 #define CS(x) ((x)? (LL_GPIO_ResetOutputPin (CS_GPIO_Port, CS_Pin)) : (LL_GPIO_SetOutputPin(CS_GPIO_Port, CS_Pin)))
 #define LCD_DC(x) ((x)? (LL_GPIO_SetOutputPin (DC_GPIO_Port, DC_Pin)) : (LL_GPIO_ResetOutputPin(DC_GPIO_Port, DC_Pin)))
 #define LCD_RESET(x) ((x)? (LL_GPIO_SetOutputPin (RST_GPIO_Port, RST_Pin)) : (LL_GPIO_ResetOutputPin(RST_GPIO_Port, RST_Pin)))
+
+#define STEP_DRIVE1(x) ((x)? (LL_GPIO_ResetOutputPin (PULSE_MOTOR1_GPIO_Port, PULSE_MOTOR1_Pin)) : (LL_GPIO_SetOutputPin(PULSE_MOTOR1_GPIO_Port, PULSE_MOTOR1_Pin)))
+#define DIR_DRIVE1(x) ((x)? (LL_GPIO_SetOutputPin (DIR1_GPIO_Port, DIR1_Pin)) : (LL_GPIO_ResetOutputPin(DIR1_GPIO_Port, DIR1_Pin)))
+#define ENABLE_DRIVE1(x) ((x)? (LL_GPIO_SetOutputPin (ENABLE1_GPIO_Port, ENABLE1_Pin)) : (LL_GPIO_ResetOutputPin(ENABLE1_GPIO_Port, ENABLE1_Pin)))
 /* USER CODE END Private defines */
 
 void MX_GPIO_Init(void);

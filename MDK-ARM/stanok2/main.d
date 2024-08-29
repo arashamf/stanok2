@@ -42,6 +42,7 @@ stanok2/main.o: ..\Core\Src\main.c ..\Core\Inc\main.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h ..\Core\Inc\dma.h \
   ..\Core\Inc\main.h ..\Core\Inc\i2c.h ..\Core\Inc\spi.h \
   ..\Core\Inc\tim.h ..\Core\Inc\usart.h ..\Core\Inc\gpio.h \
-  ..\display\ssd1306.h ..\display\fonts.h ..\display\ssd1306_interface.h \
-  ..\Core\Inc\typedef.h ..\Core\Inc\drive.h ..\Core\Inc\typedef.h \
-  ..\Core\Inc\button.h ..\Core\Inc\eeprom.h
+  ..\display\menu.h ..\Core\Inc\typedef.h ..\display\fonts.h \
+  ..\display\ssd1306.h ..\display\ssd1306_interface.h \
+  ..\Core\Inc\drive.h ..\Core\Inc\typedef.h ..\Core\Inc\button.h \
+  ..\Core\Inc\eeprom.h

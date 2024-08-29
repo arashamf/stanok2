@@ -41,4 +41,4 @@ stanok2/ssd1306_interface.o: ..\display\ssd1306_interface.c \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_gpio.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h ..\Core\Inc\spi.h \
-  ..\Core\Inc\main.h ..\Core\Inc\gpio.h
+  ..\Core\Inc\main.h ..\Core\Inc\gpio.h ..\Core\Inc\typedef.h

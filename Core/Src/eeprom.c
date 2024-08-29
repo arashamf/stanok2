@@ -1,72 +1,68 @@
 
 // Includes --------------------------------------------------------------------//
 #include "eeprom.h"
-#include "i2c.h"
 #include "angle_calc.h"
 #include "typedef.h"
-//#include "ssd1306.h"
 #include "usart.h"
-// Defines ---------------------------------------------------------------------//
-#define 	EEPROM_MEMORY_PAGE 	0x0001                                    
+#include "i2c.h"
+
+// Defines ---------------------------------------------------------------------//                                   
 
 // Private typedef ------------------------------------------------------------//
 
 // Private variables ---------------------------------------------------------//
-uint8_t EEPROM_TX_Buf[EEPROM_NUMBER_BYTES+1] = {0} ;
-uint8_t EEPROM_RX_Buf[EEPROM_NUMBER_BYTES+1] = {0} ;
+uint8_t EEPROM_TX_Buf[30] = {0} ;
+uint8_t EEPROM_RX_Buf[30] = {0} ;
 
 // Functions -------------------------------------------------------------------//
 static void EEPROM_WriteBytes	(uint16_t, uint8_t*, uint16_t);
 static void EEPROM_ReadBytes	(uint16_t, uint8_t*, uint16_t); 
+encoder_data_t ReadData_From_EEPROM (uint8_t , uint8_t);
 
 //--------------------------------------------------------------------------------------//
-static void EEPROM_WriteBuffer (uint16_t registr, uint8_t *buf, uint16_t bytes_count)
+void SaveByte_In_EEPROM (uint8_t byte, uint8_t adress)
 {
-	I2C_WriteBuffer (registr, buf, bytes_count);
-}
-
-//--------------------------------------------------------------------------------------//
-static void EEPROM_ReadBuffer (uint16_t registr, uint8_t *buf, uint16_t bytes_count)
-{  
-	I2C_ReadBuffer (registr, buf, bytes_count);
-}
-
-//--------------------------------------------------------------------------------------//
-void SaveData_In_EEPROM (encoder_data_t * handle_Data)
-{
-	uint8_t count = sizeof(handle_Data->currCounter_SetAngle);
-	for (uint8_t i = 0; i < count; i++)
-	{
-		EEPROM_TX_Buf[i] = (uint8_t)(handle_Data->prevCounter_SetAngle >> (8*i));
-	}	
-	
-	I2C_WriteBuffer (EEPROM_MEMORY_PAGE, EEPROM_TX_Buf, count);
-
+	I2C_WriteByte (byte, adress);
 	#ifdef __USE_DBG
-	sprintf ((char *)DBG_buffer,  "WRITE:%d %d\r\n", handle_Data->currCounter_SetAngle, handle_Data->prevCounter_SetAngle);
-	DBG_PutString(DBG_buffer);
+		sprintf ((char *)DBG_buffer,  "WRIGHT:%d\r\n", byte);
+		DBG_PutString(DBG_buffer);
 	#endif	
 }
 
 //--------------------------------------------------------------------------------------//
-encoder_data_t ReadData_From_EEPROM (void)
+void SaveCoilData (uint8_t * data, uint8_t number_byte, uint8_t EEPROM_adress)
 {
-	encoder_data_t  Enc_Data = {0};
-	encoder_data_t * handle_Enc = &Enc_Data;
-	uint8_t count = sizeof(Enc_Data.currCounter_SetAngle);
-	
-	I2C_ReadBuffer (EEPROM_MEMORY_PAGE, EEPROM_RX_Buf, count);
-	for (uint8_t i = 0; i < count; i++)
-	{
-		Enc_Data.currCounter_SetAngle |= (((uint32_t)*(EEPROM_RX_Buf+i)) << (8*i));
-	}	
-	Enc_Data.prevCounter_SetAngle = Enc_Data.currCounter_SetAngle;
-	
 	#ifdef __USE_DBG
-	sprintf ((char *)DBG_buffer,  "READ:%d %d\r\n",Enc_Data.currCounter_SetAngle, Enc_Data.prevCounter_SetAngle);
+	sprintf ((char *)DBG_buffer,  "WRIGHT: ");
 	DBG_PutString(DBG_buffer);
 	#endif	
 	
-	return Enc_Data;
+	for (uint8_t i = 0; i < number_byte; i++)
+	{
+		EEPROM_TX_Buf[i] = (uint8_t)(*(data+i)); //количество витков обмоток
+		
+		#ifdef __USE_DBG
+		sprintf ((char *)DBG_buffer,  "%d ", EEPROM_TX_Buf[i]);
+		DBG_PutString(DBG_buffer);
+		#endif	
+	}		
+	
+	#ifdef __USE_DBG
+	sprintf ((char *)DBG_buffer,  "\r\n");
+	DBG_PutString(DBG_buffer);
+	#endif	
+	
+	I2C_WriteBuffer (EEPROM_adress, EEPROM_TX_Buf, number_byte);
+}
+
+//--------------------------------------------------------------------------------------//
+void GetCoilData (uint8_t * data, uint8_t number_byte, uint8_t adress)
+{
+	I2C_ReadBuffer (adress, EEPROM_RX_Buf, number_byte);	
+	
+	for (uint8_t i = 0; i < number_byte; i++)
+	{	
+		data[i] = EEPROM_RX_Buf[i];	
+	}		
 }
 

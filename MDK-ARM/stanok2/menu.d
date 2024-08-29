@@ -1,5 +1,5 @@
-stanok2/eeprom.o: ..\Core\Src\eeprom.c ..\Core\Inc\eeprom.h \
-  ..\Core\Inc\main.h ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal.h \
+stanok2/menu.o: ..\display\menu.c ..\display\menu.h ..\Core\Inc\main.h \
+  ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal.h \
   ..\Core\Inc\stm32f1xx_hal_conf.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_rcc.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_def.h \
@@ -40,5 +40,7 @@ stanok2/eeprom.o: ..\Core\Src\eeprom.c ..\Core\Inc\eeprom.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_gpio.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h ..\Core\Inc\typedef.h \
-  ..\Core\Inc\angle_calc.h ..\Core\Inc\typedef.h ..\Core\Inc\usart.h \
-  ..\Core\Inc\i2c.h
+  ..\Core\Inc\main.h ..\display\fonts.h ..\Core\Inc\button.h \
+  ..\Core\Inc\drive.h ..\Core\Inc\typedef.h ..\display\ssd1306.h \
+  ..\display\ssd1306_interface.h ..\Core\Inc\eeprom.h \
+  ..\Core\Inc\usart.h

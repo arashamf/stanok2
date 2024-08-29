@@ -27,6 +27,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "menu.h"
 #include "ssd1306.h"
 #include "typedef.h"
 #include "drive.h"
@@ -51,8 +52,9 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-encoder_data_t Pos_Enc1 = {0};
-encoder_data_t Pos_Enc2 = {0};
+encoder_data_t Pos_Enc1 = {0}; //данные энкодера
+coil_data_t Coil1 = {0};
+uint8_t rdata_size = sizeof(Coil1.coil_buffer);
 
 __IO uint16_t key_code = NO_KEY;
 /* USER CODE END PV */
@@ -106,13 +108,16 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	timers_ini ();
 	ssd1306_Init();
-	Pos_Enc1 = ReadData_From_EEPROM();
-	default_screen_mode (&Font_16x26, &Pos_Enc1);
 	
-/*	#ifdef __USE_DBG
-	sprintf ((char *)DBG_buffer,  "curr=%d prev=%d\r\n", Pos_Enc1.currCounter_SetAngle, Pos_Enc1.prevCounter_SetAngle);
-	DBG_PutString(DBG_buffer);
-	#endif	*/
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "START");
+	SSD1306_Puts (LCD_buff , &Font_16x26, SSD1306_COLOR_WHITE);
+	SSD1306_UpdateScreen();
+	HAL_Delay (100);
+	
+	GetCoilData(Coil1.coil_buffer, rdata_size, EEPROM_MEMORY_PAGE);
+	main_menu (&Coil1);	
+
 	
   /* USER CODE END 2 */
 
@@ -128,21 +133,39 @@ int main(void)
 			switch (key_code) //обработка кода нажатой кнопки
 			{					
 				case KEY_ENC_SHORT:					//короткое нажатие кнопки энкодера
-					SaveData_In_EEPROM (&Pos_Enc1);
+					setup_menu (&Pos_Enc1, &Coil1);
 					break;
 				
-				case KEY_ENC_LONG: 	
-					Pos_Enc1 = ReadData_From_EEPROM();
+				case  KEY_ENC_LONG: 					
+					GetCoilData(Coil1.coil_buffer, rdata_size, EEPROM_MEMORY_PAGE);
+				
+					#ifdef __USE_DBG
+					sprintf ((char *)DBG_buffer,  "READ:%d %d %d %d\r\n", Coil1.number_coil, Coil1.set_coil[0],
+					Coil1.set_coil[1], 	Coil1.set_coil[2]);
+					DBG_PutString(DBG_buffer);
+					#endif	
+				
+					main_menu (&Coil1);
 					break;
+				
+				case  KEY_PEDAL_SHORT: 	
+					one_full_turn ();
+					break;
+				
+				case  KEY_PEDAL_LONG: 	
+					turn_coil (&Coil1);
+					break;								
 				
 				default:
 					key_code = NO_KEY;
 					break;
 			}
 		}
-		if (read_encoder1_rotation (&Pos_Enc1) == ON)
-		{	default_screen_mode (&Font_16x26, &Pos_Enc1); }
-		HAL_Delay (10);
+	/*	if (read_encoder1_rotation (&Pos_Enc1) == ON)
+		{	
+			default_screen (&Font_16x26, Coil1.set_coil[0]);
+			milling_step (FORWARD);
+		}*/
   }
   /* USER CODE END 3 */
 }

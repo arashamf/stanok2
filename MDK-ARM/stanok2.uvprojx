@@ -139,7 +139,7 @@
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2V8M.DLL</Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -756,6 +756,11 @@
               <FileName>ssd1306_interface.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\display\ssd1306_interface.c</FilePath>
+            </File>
+            <File>
+              <FileName>menu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\display\menu.c</FilePath>
             </File>
           </Files>
         </Group>

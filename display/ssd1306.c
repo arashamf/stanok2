@@ -4,11 +4,11 @@
 #include "ssd1306_interface.h"
 #include "tim.h"
 #include "gpio.h"
-#include "usart.h"
 #include "typedef.h"
+
 // Declarations and definitions -------------------------------------------------------//
 
-// Private SSD1306 structure  ---------------------------------------------------------//
+// Private structure  -----------------------------------------------------------------//
 typedef struct 
 {
 	uint16_t CurrentX;
@@ -508,29 +508,29 @@ void SSD1306_DrawFilledCircle(int16_t x0, int16_t y0, int16_t r, SSD1306_COLOR_t
 }
 
 //-----------------------------------------------------------------------------------------------//
-void debug_screen_mode (FontDef_t * font, uint8_t * buf)
+void void_screen (void)
 {
 	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
 	SSD1306_Clear_Screen ();
-	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "%x %x %x %x", *buf+0, *buf+1, *buf+2, *buf+3);
+	SSD1306_UpdateScreen();
+}
+
+//--------------------------------ф-я отображения основного меню--------------------------------//
+void default_screen (FontDef_t * font, int16_t r_number, int16_t s_number)
+{
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
+	SSD1306_Clear_Screen ();	
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "%03d/%03d", r_number, s_number);
 	SSD1306_Puts (LCD_buff , font, SSD1306_COLOR_WHITE);
 	SSD1306_UpdateScreen();
 }
 
-//-----------------------------------------------------------------------------------------------//
-void default_screen_mode (FontDef_t * font, encoder_data_t * HandleEncData)
+//------------------------ф-я отображения установленного количества витков------------------------//
+void setup_coil_screen (FontDef_t * font, uint8_t count, int32_t number_click)
 {
 	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
 	SSD1306_Clear_Screen ();
-	
-	/*#ifdef __USE_DBG
-	sprintf ((char *)DBG_buffer,  "screen:curr=%d prev=%d\r\n", HandleEncData->currCounter_SetAngle, HandleEncData->prevCounter_SetAngle);
-	DBG_PutString(DBG_buffer);
-	#endif	*/
-	
-	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "%05d", HandleEncData->currCounter_SetAngle);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "%uC:%04d", count, number_click);
 	SSD1306_Puts (LCD_buff , font, SSD1306_COLOR_WHITE);
 	SSD1306_UpdateScreen();
 }
-
-//-----------------------------------------------------------------------------------------------//

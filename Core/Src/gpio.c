@@ -54,7 +54,8 @@ void MX_GPIO_Init(void)
   LL_GPIO_ResetOutputPin(GPIOB, RST_Pin|DC_Pin|CS_Pin);
 
   /**/
-  LL_GPIO_ResetOutputPin(GPIOA, DIR1_Pin|DIR2_Pin|ENABLE1_Pin|ENABLE2_Pin);
+  LL_GPIO_ResetOutputPin(GPIOA, PULSE_MOTOR1_Pin|DIR1_Pin|DIR2_Pin|ENABLE1_Pin
+                          |ENABLE2_Pin);
 
   /**/
   GPIO_InitStruct.Pin = MODE_BTN_Pin|LEFT_BTN_Pin|CENTER_BTN_Pin|RIGHT_BTN_Pin;
@@ -74,7 +75,8 @@ void MX_GPIO_Init(void)
   LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /**/
-  GPIO_InitStruct.Pin = DIR1_Pin|DIR2_Pin|ENABLE1_Pin|ENABLE2_Pin;
+  GPIO_InitStruct.Pin = PULSE_MOTOR1_Pin|DIR1_Pin|DIR2_Pin|ENABLE1_Pin
+                          |ENABLE2_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;

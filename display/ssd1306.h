@@ -6,7 +6,6 @@
 #include "main.h"
 #include "fonts.h"
 #include "ssd1306_interface.h"
-#include "typedef.h"
 
 // Exported types ---------------------------------------------------------------//
 typedef enum 
@@ -79,8 +78,9 @@ void SSD1306_DrawFilledTriangle(uint16_t , uint16_t , uint16_t , uint16_t , uint
 void SSD1306_DrawCircle(int16_t , int16_t , int16_t , SSD1306_COLOR_t );
 void SSD1306_DrawFilledCircle(int16_t , int16_t , int16_t , SSD1306_COLOR_t );
 
-void debug_screen_mode (FontDef_t * , uint8_t * );
-void default_screen_mode (FontDef_t * , encoder_data_t * );
+void void_screen (void);
+void default_screen (FontDef_t * , int16_t , int16_t );
+void setup_coil_screen (FontDef_t * , uint8_t , int32_t );
 
 // Variables ------------------------------------------------------------------//
 extern uint8_t LCD_buff[];

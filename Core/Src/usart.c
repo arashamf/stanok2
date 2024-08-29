@@ -22,7 +22,7 @@
 
 /* USER CODE BEGIN 0 */
 #define 	DBG_UART 			USART3
-#define		BUFFER_SIZE		25
+#define		BUFFER_SIZE		50
 
 #ifdef __USE_DBG
 char DBG_buffer[BUFFER_SIZE];

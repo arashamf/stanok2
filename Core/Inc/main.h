@@ -112,16 +112,6 @@ void Error_Handler(void);
 #define __USE_DBG
 #define __SPI_DMA_MODE
 
-#define ON 												1
-#define OFF 											0
-#define FORWARD 									1
-#define BACKWARD 									0
-#define DISP_CLEAR 								1
-#define DISP_NOT_CLEAR 						0
-#define EEPROM_NUMBER_BYTES 			4
-
-#define CPU_CLOCK_VALUE			(72000000UL)	// Дастота контроллера //
-#define TICKS_PER_SECOND		1000 
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

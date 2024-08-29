@@ -3,6 +3,7 @@
 #include "ssd1306_interface.h"
 #include "spi.h"
 #include "gpio.h"
+#include "typedef.h"
 
 /* Private define ------------------------------------------------------------*/
 #define SSD1306_SPI_TIMEOUT                                	0xFF

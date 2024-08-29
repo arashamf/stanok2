@@ -39,6 +39,7 @@
 "stanok2\fonts.o"
 "stanok2\ssd1306.o"
 "stanok2\ssd1306_interface.o"
+"stanok2\menu.o"
 --strict --scatter "stanok2\stanok2.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
