@@ -35,7 +35,7 @@ typedef struct
 		uint8_t coil_buffer[MAX_NUMBER_COIL*MAX_NUMBER_COIL*2+1];
 	};
 } coil_data_t;
-#pragma pack()
+
 //----------------------------------------------------------------------------------//
 typedef union
 {
@@ -48,6 +48,16 @@ typedef union
 	};
 	uint8_t flag;
 }STATUS_FLAG_t;
+
+//----------------------------------------------------------------------------------//
+typedef struct 
+{
+	uint16_t value_Compare;
+	uint16_t value_Period;
+	uint8_t microstep;
+} PWM_data_t;
+
+#pragma pack()
 
 //код нажатой кнопки----------------------------------------------------------------//
 typedef enum 

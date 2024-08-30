@@ -29,18 +29,21 @@ extern "C" {
 #include "main.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "typedef.h"
 /* USER CODE END Includes */
+
+extern TIM_HandleTypeDef htim3;
 
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
 
-void MX_TIM1_Init(void);
 void MX_TIM2_Init(void);
 void MX_TIM3_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+void PWM_start (PWM_data_t * PWM_data) ;
+uint32_t Get_Encoder1_data (void) ;
 void delay_us(uint16_t );
 void repeat_time (uint16_t );
 void timers_ini (void);

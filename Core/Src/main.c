@@ -100,11 +100,10 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_TIM2_Init();
-  MX_TIM3_Init();
   MX_SPI2_Init();
-  MX_TIM1_Init();
   MX_I2C1_Init();
   MX_USART3_UART_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 	timers_ini ();
 	ssd1306_Init();
@@ -149,7 +148,7 @@ int main(void)
 					break;
 				
 				case  KEY_PEDAL_SHORT: 	
-					one_full_turn ();
+					dr2_one_full_turn ();
 					break;
 				
 				case  KEY_PEDAL_LONG: 	
@@ -163,8 +162,8 @@ int main(void)
 		}
 	/*	if (read_encoder1_rotation (&Pos_Enc1) == ON)
 		{	
-			default_screen (&Font_16x26, Coil1.set_coil[0]);
-			milling_step (FORWARD);
+			main_menu (&Coil1);
+		//	dr2_rotate_step();
 		}*/
   }
   /* USER CODE END 3 */

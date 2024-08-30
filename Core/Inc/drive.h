@@ -13,10 +13,11 @@ extern "C" {
 
 
 // Prototypes ------------------------------------------------------------------//
-uint8_t read_encoder1_rotation (encoder_data_t * HandleEncData) ;
-void milling_step (uint8_t );
-void one_full_turn (void) ;
-void turn_coil (coil_data_t * ) ;
+uint8_t read_encoder1_rotation (encoder_data_t * HandleEncData);
+//void dr2_rotate_step (uint8_t );
+void dr1_one_full_turn (void);
+void dr2_one_full_turn (void);
+void turn_coil (coil_data_t * );
 
 // Variables ------------------------------------------------------------------//
 extern __IO uint32_t need_step;
