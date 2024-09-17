@@ -4,6 +4,7 @@
 #include "gpio.h"
 #include "tim.h"
 #include "menu.h"
+#include "usart.h"
 #include "typedef.h"
 #include "button.h"
 #include "eeprom.h"
@@ -22,9 +23,9 @@ static void dr1_rotate_step (uint8_t micro_step)
 {
 	for (uint8_t count = 0; count < micro_step; count++) //количество микрошагов (импульсов)
 	{
-			STEP_DRIVE1(ON);
+		//	STEP_DRIVE1(ON);
 			delay_us (3); //3 мкс
-			STEP_DRIVE1(OFF);
+	//		STEP_DRIVE1(OFF);
 			delay_us (3); //3 мкс
 	}
 }
@@ -57,29 +58,56 @@ void dr2_rotate_step (uint8_t micro_step)
 	PWM_start (&Drive2_PWM);
 	DRIVE2_ENABLE(OFF);*/
 	
-	for (uint8_t count = 0; count < micro_step; count++) //количество микрошагов (импульсов)
+	/*for (uint8_t count = 0; count < micro_step; count++) //количество микрошагов (импульсов)
 	{
 			STEP_DRIVE2(ON);
 			delay_us (200); //3 мкс
 			STEP_DRIVE2(OFF);
 			delay_us (200); //3 мкс
-	}
+	}*/
 }
-	//------------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 void dr2_one_full_turn (void) 
 {
 	DRIVE2_ENABLE(ON);
 	DIR_DRIVE2 (BACKWARD); //направление вращени€
 	delay_us (6);	
 	
-	for (uint16_t count = 0; count < STEP_IN_TURN; count++)
+/*	for (uint16_t count = 0; count < STEP_IN_TURN; count++)
 	{
 		dr2_rotate_step (STEP_DIV);
 		delay_us (1000);
-	}
-	DRIVE2_ENABLE(OFF);
+	}*/
+	Drive2_PWM.value_Compare = 499;
+	Drive2_PWM.value_Period = 999;
+	Drive2_PWM.microstep = PULSE_IN_TIM_RCR;
+	Drive2_PWM.count_start_PWM_TIM = PULSE_IN_TUR/PULSE_IN_TIM_RCR;
+	PWM_start (&Drive2_PWM);
+
+//	DRIVE2_ENABLE(OFF);
 }
 	
+//------------------------------------------------------------------------------------------------//
+void PWM_continue (void) 
+{
+
+	if (Drive2_PWM.count_start_PWM_TIM > 0)
+	{
+		PWM_start (&Drive2_PWM);
+		Drive2_PWM.count_start_PWM_TIM--;
+		#ifdef __USE_DBG
+		sprintf ((char *)DBG_buffer,  "%d\r\n", Drive2_PWM.count_start_PWM_TIM);
+		DBG_PutString(DBG_buffer);
+		#endif	
+	}
+	else
+	{
+		LL_TIM_ClearFlag_UPDATE(TIM1); //сброс флага обновлени€ таймера
+		Drive2_PWM.count_start_PWM_TIM = 0;
+		DRIVE2_ENABLE(OFF);
+	}
+}
+
 //------------------------------------------------------------------------------------------------//
 void turn_coil (coil_data_t * HandleCoilData) 
 {
@@ -136,3 +164,10 @@ void encoder_reset (encoder_data_t * HandleEncData)
 	HandleEncData->prevCounter_SetClick = HandleEncData->currCounter_SetClick; //сохранение преобразованного текущего показани€ энкодера в структуру установки шага поворота	
 	HandleEncData->delta = 0; //показани€ от энкодера обнул€ютс€
 }
+
+//------------------------------------------------------------------------------------------------//
+void TIM_PWM1_Callback(void)
+{
+	PWM_continue ();
+}
+

@@ -96,10 +96,6 @@ void Error_Handler(void);
 #define ENABLE2_GPIO_Port GPIOC
 #define DIR2_Pin LL_GPIO_PIN_9
 #define DIR2_GPIO_Port GPIOC
-#define PULSE_MOTOR2_Pin LL_GPIO_PIN_8
-#define PULSE_MOTOR2_GPIO_Port GPIOA
-#define PULSE_MOTOR1_Pin LL_GPIO_PIN_9
-#define PULSE_MOTOR1_GPIO_Port GPIOA
 #define ENABLE1_Pin LL_GPIO_PIN_10
 #define ENABLE1_GPIO_Port GPIOA
 #define DIR1_Pin LL_GPIO_PIN_11

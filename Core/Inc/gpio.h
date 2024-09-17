@@ -41,8 +41,8 @@ extern "C" {
 #define LCD_DC(x) ((x)? (LL_GPIO_SetOutputPin (DC_GPIO_Port, DC_Pin)) : (LL_GPIO_ResetOutputPin(DC_GPIO_Port, DC_Pin)))
 #define LCD_RESET(x) ((x)? (LL_GPIO_SetOutputPin (RST_GPIO_Port, RST_Pin)) : (LL_GPIO_ResetOutputPin(RST_GPIO_Port, RST_Pin)))
 
-#define STEP_DRIVE1(x) ((x)? (LL_GPIO_ResetOutputPin (PULSE_MOTOR1_GPIO_Port, PULSE_MOTOR1_Pin)) : (LL_GPIO_SetOutputPin(PULSE_MOTOR1_GPIO_Port, PULSE_MOTOR1_Pin)))
-#define STEP_DRIVE2(x) ((x)? (LL_GPIO_ResetOutputPin (PULSE_MOTOR2_GPIO_Port, PULSE_MOTOR2_Pin)) : (LL_GPIO_SetOutputPin(PULSE_MOTOR2_GPIO_Port, PULSE_MOTOR2_Pin)))
+//#define STEP_DRIVE1(x) ((x)? (LL_GPIO_ResetOutputPin (PULSE_MOTOR1_GPIO_Port, PULSE_MOTOR1_Pin)) : (LL_GPIO_SetOutputPin(PULSE_MOTOR1_GPIO_Port, PULSE_MOTOR1_Pin)))
+//#define STEP_DRIVE2(x) ((x)? (LL_GPIO_ResetOutputPin (PULSE_MOTOR2_GPIO_Port, PULSE_MOTOR2_Pin)) : (LL_GPIO_SetOutputPin(PULSE_MOTOR2_GPIO_Port, PULSE_MOTOR2_Pin)))
 #define DIR_DRIVE1(x) ((x)? (LL_GPIO_SetOutputPin (DIR1_GPIO_Port, DIR1_Pin)) : (LL_GPIO_ResetOutputPin(DIR1_GPIO_Port, DIR1_Pin)))
 #define DIR_DRIVE2(x) ((x)? (LL_GPIO_SetOutputPin (DIR2_GPIO_Port, DIR2_Pin)) : (LL_GPIO_ResetOutputPin(DIR2_GPIO_Port, DIR2_Pin)))
 /* USER CODE END Private defines */

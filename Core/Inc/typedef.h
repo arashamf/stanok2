@@ -55,6 +55,7 @@ typedef struct
 	uint16_t value_Compare;
 	uint16_t value_Period;
 	uint8_t microstep;
+	uint8_t count_start_PWM_TIM;
 } PWM_data_t;
 
 #pragma pack()
@@ -95,6 +96,7 @@ struct KEY_MACHINE_t
 
 #define   REDUCER 						40 			//делитель редуктора
 #define 	PULSE_IN_TUR				1600 		//количество микрошагов в одном полном обороте (360 гр) с учётом делителя драйвера
+#define 	PULSE_IN_TIM_RCR		200
 #define 	STEP_IN_TURN				200		 //количество шагов (1,8гр) в одном полном обороте (360 гр)
 #define 	STEP_DIV 						(PULSE_IN_TUR/STEP_IN_TURN)		//количество микрошагов (8) в одном шаге двигателя (1,8гр)
 #define 	STEP_TURNOVER				(PULSE_IN_TUR*REDUCER) //количество микрошагов в одном полном обороте (360 гр) с учётом делителя драйвера и редуктора 

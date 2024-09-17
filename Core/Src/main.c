@@ -104,6 +104,7 @@ int main(void)
   MX_I2C1_Init();
   MX_USART3_UART_Init();
   MX_TIM3_Init();
+  MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
 	timers_ini ();
 	ssd1306_Init();
@@ -117,7 +118,14 @@ int main(void)
 	GetCoilData(Coil1.coil_buffer, rdata_size, EEPROM_MEMORY_PAGE);
 	main_menu (&Coil1);	
 
-	
+	/*LL_TIM_ClearFlag_UPDATE (TIM1);
+	LL_TIM_DisableCounter(TIM1); //выключение таймера
+	LL_TIM_CC_DisableChannel(TIM1, LL_TIM_CHANNEL_CH1);
+	LL_TIM_SetRepetitionCounter(TIM1, 10); //Set the Repetition Counter value
+	//LL_TIM_SetRepetitionCounter(TIM_PWM, 10);
+	LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH1); //включение канала 1 таймера
+  LL_TIM_EnableAllOutputs(TIM1);	//включение таймера  для генерации ШИМ
+	LL_TIM_EnableCounter(TIM1); //Enable timer counter*/
   /* USER CODE END 2 */
 
   /* Infinite loop */
