@@ -13,13 +13,11 @@ extern "C" {
 // Defines ---------------------------------------------------------------------//
 
 // Prototypes ------------------------------------------------------------------//
-uint8_t read_encoder1_rotation (encoder_data_t * HandleEncData);
-//void dr2_rotate_step (uint8_t );
 void dr1_one_full_turn (void);
-void dr2_one_full_turn (void);
-void PWM_continue (void);
+void init_drive_turn (coil_data_t * );
+uint8_t read_encoder1_rotation (encoder_data_t * );
+void encoder_reset (encoder_data_t * );
 void TIM_PWM1_Callback(void);
-void turn_coil (coil_data_t * );
 
 // Variables ------------------------------------------------------------------//
 extern __IO uint32_t need_step;

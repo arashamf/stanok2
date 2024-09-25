@@ -38,14 +38,14 @@ uint16_t scan_keys (void)
 			if (LL_GPIO_IsInputPinSet(CENTER_BTN_GPIO_Port, CENTER_BTN_Pin) == OFF)
 			{
 				key_state =  KEY_STATE_ON;
-				key_code = KEY_PEDAL_SHORT;
+				key_code = KEY_NULL_SHORT;
 			}
 			else
 			{
 				if (LL_GPIO_IsInputPinSet(MODE_BTN_GPIO_Port, MODE_BTN_Pin) == OFF)
 				{
 					key_state =  	KEY_STATE_ON;
-					key_code 	= 	KEY_NULL_SHORT;
+					key_code 	= 	KEY_PEDAL_SHORT;
 				}
 			}
 		}
@@ -144,12 +144,12 @@ static uint8_t scan_buttons_GPIO (uint16_t key_code)
 	switch (key_code)
 	{
 						
-		case KEY_PEDAL_SHORT:
+		case KEY_NULL_SHORT:
 			if ((LL_GPIO_IsInputPinSet(CENTER_BTN_GPIO_Port, CENTER_BTN_Pin))	== ON)
 				pin_status = ON;
 			break;
 						
-		case KEY_PEDAL_LONG:
+		case KEY_NULL_LONG:
 			if ((LL_GPIO_IsInputPinSet(CENTER_BTN_GPIO_Port, CENTER_BTN_Pin))	== ON)
 				pin_status = ON;
 			break;	
@@ -164,12 +164,12 @@ static uint8_t scan_buttons_GPIO (uint16_t key_code)
 				pin_status = ON;
 			break;
 		
-		case KEY_NULL_SHORT:
+		case KEY_PEDAL_SHORT:
 			if ((LL_GPIO_IsInputPinSet(MODE_BTN_GPIO_Port, MODE_BTN_Pin))	== ON)
 				pin_status = ON;
 			break;
 						
-		case KEY_NULL_LONG:
+		case KEY_PEDAL_LONG:
 			if ((LL_GPIO_IsInputPinSet(MODE_BTN_GPIO_Port, MODE_BTN_Pin))	== ON)
 				pin_status = ON;
 			break;

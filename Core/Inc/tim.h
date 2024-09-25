@@ -42,7 +42,7 @@ void MX_TIM2_Init(void);
 void MX_TIM3_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-void PWM_start (PWM_data_t * PWM_data) ;
+void PWM_on (PWM_data_t * PWM_data) ;
 uint32_t Get_Encoder1_data (void) ;
 void delay_us(uint16_t );
 void repeat_time (uint16_t );

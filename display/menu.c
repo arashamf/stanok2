@@ -39,8 +39,8 @@ void setup_menu (encoder_data_t * HandleEncData, coil_data_t * HandleCoilData)
 					}
 					
 					HandleCoilData->number_coil = count+1; //количество обмоток
-					SaveCoilData (HandleCoilData->coil_buffer, wdata_size, EEPROM_MEMORY_PAGE);
-					main_menu (HandleCoilData); //главное меню дисплея							
+				//	SaveCoilData (HandleCoilData->coil_buffer, wdata_size, EEPROM_MEMORY_PAGE);
+					turn_drive_menu (HandleCoilData); //главное меню дисплея							
 					return;
 				}	
 				else
@@ -59,13 +59,22 @@ void setup_menu (encoder_data_t * HandleEncData, coil_data_t * HandleCoilData)
 		}
 	}
 	HandleCoilData->number_coil = MAX_NUMBER_COIL;
-	SaveCoilData (HandleCoilData->coil_buffer, wdata_size, EEPROM_MEMORY_PAGE);
-	main_menu (HandleCoilData);
+	//SaveCoilData (HandleCoilData->coil_buffer, wdata_size, EEPROM_MEMORY_PAGE);
+	turn_drive_menu (HandleCoilData);
 	return;
 }
 
-//--------------------------------------------------------------------------------------------//
-void main_menu (coil_data_t * HandleCoilData)
+//-------------------------------------------------------------------------------------------------------------//
+void main_menu (void)
+{
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "SELECT");
+	SSD1306_Puts (LCD_buff , &Font_16x26, SSD1306_COLOR_WHITE);
+	SSD1306_UpdateScreen();
+}
+
+//-------------------------------------------------------------------------------------------------------------//
+void turn_drive_menu (coil_data_t * HandleCoilData)
 {
 	default_screen (&Font_16x26, HandleCoilData->remains_coil[0], HandleCoilData->set_coil[0]);	
 }

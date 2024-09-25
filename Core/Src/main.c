@@ -109,23 +109,28 @@ int main(void)
 	timers_ini ();
 	ssd1306_Init();
 	
-	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
-	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "START");
-	SSD1306_Puts (LCD_buff , &Font_16x26, SSD1306_COLOR_WHITE);
-	SSD1306_UpdateScreen();
-	HAL_Delay (100);
+	//GetCoilData(Coil1.coil_buffer, rdata_size, EEPROM_MEMORY_PAGE);
+	main_menu ();	
+	while (1)
+	{
+		if ((key_code = scan_keys()) != NO_KEY)
+		{
+			switch (key_code) //обработка кода нажатой кнопки
+			{	
+				case KEY_PEDAL_LONG:
+					init_drive_turn (&Coil1);
+					break;
+				
+				case KEY_ENC_LONG:
+					setup_menu (&Pos_Enc1, &Coil1);
+					break;
+				
+				default:
+					break;	
+			}			
+		}
+	}
 	
-	GetCoilData(Coil1.coil_buffer, rdata_size, EEPROM_MEMORY_PAGE);
-	main_menu (&Coil1);	
-
-	/*LL_TIM_ClearFlag_UPDATE (TIM1);
-	LL_TIM_DisableCounter(TIM1); //выключение таймера
-	LL_TIM_CC_DisableChannel(TIM1, LL_TIM_CHANNEL_CH1);
-	LL_TIM_SetRepetitionCounter(TIM1, 10); //Set the Repetition Counter value
-	//LL_TIM_SetRepetitionCounter(TIM_PWM, 10);
-	LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH1); //включение канала 1 таймера
-  LL_TIM_EnableAllOutputs(TIM1);	//включение таймера  для генерации ШИМ
-	LL_TIM_EnableCounter(TIM1); //Enable timer counter*/
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -135,44 +140,14 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		if ((key_code = scan_keys()) != NO_KEY)
+		if ((key_code = scan_keys()) == KEY_PEDAL_LONG)
 		{
-			switch (key_code) //обработка кода нажатой кнопки
-			{					
-				case KEY_ENC_SHORT:					//короткое нажатие кнопки энкодера
-					setup_menu (&Pos_Enc1, &Coil1);
-					break;
-				
-				case  KEY_ENC_LONG: 					
-					GetCoilData(Coil1.coil_buffer, rdata_size, EEPROM_MEMORY_PAGE);
-				
-					#ifdef __USE_DBG
-					sprintf ((char *)DBG_buffer,  "READ:%d %d %d %d\r\n", Coil1.number_coil, Coil1.set_coil[0],
-					Coil1.set_coil[1], 	Coil1.set_coil[2]);
-					DBG_PutString(DBG_buffer);
-					#endif	
-				
-					main_menu (&Coil1);
-					break;
-				
-				case  KEY_PEDAL_SHORT: 	
-					dr2_one_full_turn ();
-					break;
-				
-				case  KEY_PEDAL_LONG: 	
-					turn_coil (&Coil1);
-					break;								
-				
-				default:
-					key_code = NO_KEY;
-					break;
-			}
+			init_drive_turn (&Coil1);
 		}
-	/*	if (read_encoder1_rotation (&Pos_Enc1) == ON)
-		{	
-			main_menu (&Coil1);
-		//	dr2_rotate_step();
-		}*/
+		else
+		{
+			
+		}
   }
   /* USER CODE END 3 */
 }

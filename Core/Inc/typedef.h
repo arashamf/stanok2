@@ -34,6 +34,7 @@ typedef struct
 		};
 		uint8_t coil_buffer[MAX_NUMBER_COIL*MAX_NUMBER_COIL*2+1];
 	};
+	struct coil_data_t *next;
 } coil_data_t;
 
 //----------------------------------------------------------------------------------//
@@ -52,10 +53,11 @@ typedef union
 //----------------------------------------------------------------------------------//
 typedef struct 
 {
-	uint16_t value_Compare;
-	uint16_t value_Period;
-	uint8_t microstep;
-	uint8_t count_start_PWM_TIM;
+	uint16_t value_Compare; //значение сравнения
+	uint16_t value_Period; //период импульса
+	uint16_t turn_number; //количество совершённых оборотов
+	uint8_t microstep; //значение регистра RCR
+	uint8_t count_start_PWM_TIM; //количество итераций в одном обороте
 } PWM_data_t;
 
 #pragma pack()
@@ -95,11 +97,11 @@ struct KEY_MACHINE_t
 #define 	SLAVE_OWN_ADDRESS                       0xA0 //адресс EEPROM микросхемы
 
 #define   REDUCER 						40 			//делитель редуктора
-#define 	PULSE_IN_TUR				1600 		//количество микрошагов в одном полном обороте (360 гр) с учётом делителя драйвера
-#define 	PULSE_IN_TIM_RCR		200
+#define 	PULSE_IN_TURN				1600 		//количество микрошагов в одном полном обороте (360 гр) с учётом делителя драйвера
+#define 	PULSE_IN_TIM_RCR		100
 #define 	STEP_IN_TURN				200		 //количество шагов (1,8гр) в одном полном обороте (360 гр)
-#define 	STEP_DIV 						(PULSE_IN_TUR/STEP_IN_TURN)		//количество микрошагов (8) в одном шаге двигателя (1,8гр)
-#define 	STEP_TURNOVER				(PULSE_IN_TUR*REDUCER) //количество микрошагов в одном полном обороте (360 гр) с учётом делителя драйвера и редуктора 
+#define 	STEP_DIV 						(PULSE_IN_TURN/STEP_IN_TURN)		//количество микрошагов (8) в одном шаге двигателя (1,8гр)
+#define 	STEP_TURNOVER				(PULSE_IN_TURN*REDUCER) //количество микрошагов в одном полном обороте (360 гр) с учётом делителя драйвера и редуктора 
 
 #define 	STEP18_IN_SEC					6480 							//количество секунд в одном шаге двигателя (1,8гр)
 #define 	CIRCLE_IN_SEC					(STEP18_IN_SEC*CIRCLE_IN_STEP)	//количество секунд в одном полном обороте двигателя (360 гр)
