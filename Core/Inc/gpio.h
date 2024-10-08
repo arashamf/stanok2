@@ -33,9 +33,8 @@ extern "C" {
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN Private defines */
-//#define STEP(x) ((x)? (LL_GPIO_ResetOutputPin (PUL_GPIO_Port, PUL_Pin)) : (LL_GPIO_SetOutputPin(PUL_GPIO_Port, PUL_Pin)))
-#define DRIVE1_ENABLE(x) ((x)? (LL_GPIO_SetOutputPin (ENABLE1_GPIO_Port, ENABLE1_Pin)) : (LL_GPIO_ResetOutputPin(ENABLE1_GPIO_Port, ENABLE1_Pin)))
-#define DRIVE2_ENABLE(x) ((x)? (LL_GPIO_SetOutputPin (ENABLE2_GPIO_Port, ENABLE2_Pin)) : (LL_GPIO_ResetOutputPin(ENABLE2_GPIO_Port, ENABLE2_Pin)))
+#define DRIVE1_ENABLE(x) ((x)? (LL_GPIO_ResetOutputPin (ENABLE1_GPIO_Port, ENABLE1_Pin)) : (LL_GPIO_SetOutputPin(ENABLE1_GPIO_Port, ENABLE1_Pin)))
+#define DRIVE2_ENABLE(x) ((x)? (LL_GPIO_ResetOutputPin (ENABLE2_GPIO_Port, ENABLE2_Pin)) : (LL_GPIO_SetOutputPin(ENABLE2_GPIO_Port, ENABLE2_Pin)))
 
 #define CS(x) ((x)? (LL_GPIO_ResetOutputPin (CS_GPIO_Port, CS_Pin)) : (LL_GPIO_SetOutputPin(CS_GPIO_Port, CS_Pin)))
 #define LCD_DC(x) ((x)? (LL_GPIO_SetOutputPin (DC_GPIO_Port, DC_Pin)) : (LL_GPIO_ResetOutputPin(DC_GPIO_Port, DC_Pin)))

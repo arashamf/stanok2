@@ -4,6 +4,7 @@
 "stanok2\button.o"
 "stanok2\drive.o"
 "stanok2\eeprom.o"
+"stanok2\encoder.o"
 "stanok2\main.o"
 "stanok2\gpio.o"
 "stanok2\dma.o"

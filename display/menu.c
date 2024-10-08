@@ -7,6 +7,7 @@
 #include "ssd1306.h"
 #include "fonts.h"
 #include "eeprom.h"
+#include "encoder.h"
 #include "usart.h"
 // Declarations and definitions -------------------------------------------------------//
 

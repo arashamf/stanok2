@@ -1,6 +1,6 @@
 
-#ifndef __DRIVE_H__
-#define __DRIVE_H__
+#ifndef __ENCODER_H__
+#define __ENCODER_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -13,16 +13,10 @@ extern "C" {
 // Defines ---------------------------------------------------------------------//
 
 // Prototypes ------------------------------------------------------------------//
-void dr1_one_full_turn (void);
-void init_drive_turn (coil_data_t * );
 uint8_t read_encoder1_rotation (encoder_data_t * );
 void encoder_reset (encoder_data_t * );
-void TIM_counter_PWM_Callback (void);
-void Left_Sensor_Callback (void);
-void Right_Sensor_Callback (void);
 
 // Variables ------------------------------------------------------------------//
-extern __IO uint32_t need_step;
 
 #ifdef __cplusplus
 }

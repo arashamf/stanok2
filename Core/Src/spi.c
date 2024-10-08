@@ -86,14 +86,13 @@ void MX_SPI2_Init(void)
   SPI_InitStruct.CRCPoly = 10;
   LL_SPI_Init(SPI2, &SPI_InitStruct);
   /* USER CODE BEGIN SPI2_Init 2 */
-	//LL_SPI_Enable(SPI2);
 	LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_5);
   LL_DMA_ClearFlag_TC5(DMA1);
   LL_DMA_ClearFlag_TE5(DMA1); 
   LL_SPI_EnableDMAReq_TX(SPI2); //Разрешение запроса SPI2 к DMA
-  LL_DMA_EnableIT_TC(DMA1, LL_DMA_CHANNEL_5);
-  LL_DMA_EnableIT_TE(DMA1, LL_DMA_CHANNEL_5);
-  LL_SPI_Enable(SPI2);
+  LL_DMA_EnableIT_TC(DMA1, LL_DMA_CHANNEL_5); //Enable Transfer complete interrupt
+  LL_DMA_EnableIT_TE(DMA1, LL_DMA_CHANNEL_5); //Enable Transfer error interrupt
+  LL_SPI_Enable(SPI2); //enable SPI2
   /* USER CODE END SPI2_Init 2 */
 
 }
@@ -127,7 +126,7 @@ void spi_write_buffer_DMA (void)
 //	LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_5, SSD1306_X_SIZE);
 	LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_5, SSD1306_BUFFER_SIZE/4);
 	LL_DMA_ConfigAddresses(DMA1, LL_DMA_CHANNEL_5, (uint32_t)&SSD1306_Buffer[(SSD1306_X_SIZE*count) - 4], 
-	LL_SPI_DMA_GetRegAddr(SPI2), LL_DMA_GetDataTransferDirection(DMA1, LL_DMA_CHANNEL_5));
+	LL_SPI_DMA_GetRegAddr(SPI2), LL_DMA_GetDataTransferDirection(DMA1, LL_DMA_CHANNEL_5));  //Get the data register address used for DMA transfer
 	if (count < 4)
 	{
 		SSD1306_PageAdress(count);
@@ -146,7 +145,7 @@ void spi_write_buffer_DMA (void)
 //-------------------------------------------------------------------------------------//
 void DMA1_Channel5_Callback(void)
 {
-	LL_DMA_ClearFlag_GI5(DMA1);
+	LL_DMA_ClearFlag_GI5(DMA1); // Clear Channel 5 global interrupt flag
 	spi_write_buffer_DMA ();
 }
 /* USER CODE END 1 */

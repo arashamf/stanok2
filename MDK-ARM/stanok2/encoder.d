@@ -1,5 +1,5 @@
-stanok2/spi.o: ..\Core\Src\spi.c ..\Core\Inc\spi.h ..\Core\Inc\main.h \
-  ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal.h \
+stanok2/encoder.o: ..\Core\Src\encoder.c ..\Core\Inc\encoder.h \
+  ..\Core\Inc\main.h ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal.h \
   ..\Core\Inc\stm32f1xx_hal_conf.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_rcc.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_def.h \
@@ -41,6 +41,5 @@ stanok2/spi.o: ..\Core\Src\spi.c ..\Core\Inc\spi.h ..\Core\Inc\main.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_pwr.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_gpio.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h \
-  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h ..\Core\Inc\gpio.h \
-  ..\display\ssd1306.h ..\Core\Inc\main.h ..\display\fonts.h \
-  ..\display\ssd1306_interface.h ..\Core\Inc\typedef.h
+  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h ..\Core\Inc\typedef.h \
+  ..\Core\Inc\tim.h

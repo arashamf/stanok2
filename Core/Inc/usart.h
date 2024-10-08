@@ -39,9 +39,8 @@ extern "C" {
 void MX_USART3_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-void DBG_PutString(const char *);
-
 #ifdef __USE_DBG
+void DBG_PutString(const char *);
 extern char DBG_buffer[];
 #endif
 /* USER CODE END Prototypes */

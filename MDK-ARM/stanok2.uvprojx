@@ -415,6 +415,11 @@
               <FilePath>..\Core\Src\eeprom.c</FilePath>
             </File>
             <File>
+              <FileName>encoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\encoder.c</FilePath>
+            </File>
+            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/main.c</FilePath>

@@ -227,9 +227,9 @@ void SSD1306_ToggleInvert(void)
 void SSD1306_Fill(SSD1306_COLOR_t color) 
 {
 	if (SSD1306.Inverted) 
-		memset(SSD1306_Buffer, (color == SSD1306_COLOR_WHITE) ? 0x00 : 0xFF, SSD1306_BUFFER_SIZE);
+	{	memset(SSD1306_Buffer, (color == SSD1306_COLOR_WHITE) ? 0x00 : 0xFF, SSD1306_BUFFER_SIZE);	}
 	else 
-		memset(SSD1306_Buffer, (color == SSD1306_COLOR_BLACK) ? 0x00 : 0xFF, SSD1306_BUFFER_SIZE);
+	{	memset(SSD1306_Buffer, (color == SSD1306_COLOR_BLACK) ? 0x00 : 0xFF, SSD1306_BUFFER_SIZE);	}
 }
 
 //-----------------------------------------------------------------------------------------------//

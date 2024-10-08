@@ -53,10 +53,10 @@ typedef union
 //----------------------------------------------------------------------------------//
 typedef struct 
 {
-	uint16_t value_Compare; //значение сравнения
+	uint16_t Compare_Drive1;
+	uint16_t Compare_Drive2; //значение сравнения двигателя 2
 	uint16_t value_Period; //период импульса
 	uint16_t turn_number; //количество совершённых оборотов
-	uint8_t microstep; //значение регистра RCR
 	uint8_t count_start_PWM_TIM; //количество итераций в одном обороте
 } PWM_data_t;
 
@@ -112,6 +112,8 @@ struct KEY_MACHINE_t
 #define 	OFF 											0
 #define 	FORWARD 									1
 #define 	BACKWARD 									0
+#define 	LEFT 											1
+#define 	RIGHT 										0
 #define 	DISP_CLEAR 								1
 #define 	DISP_NOT_CLEAR 						0
 //#define 	EEPROM_NUMBER_BYTES 			4
