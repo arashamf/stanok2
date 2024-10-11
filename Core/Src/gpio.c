@@ -38,8 +38,6 @@
         * Output
         * EVENT_OUT
         * EXTI
-     PA1   ------> S_TIM2_CH2
-     PA3   ------> S_TIM2_CH4
 */
 void MX_GPIO_Init(void)
 {
@@ -66,13 +64,6 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = MODE_BTN_Pin|LEFT_BTN_Pin|CENTER_BTN_Pin|RIGHT_BTN_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_FLOATING;
   LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-  /**/
-  GPIO_InitStruct.Pin = LL_GPIO_PIN_1|LL_GPIO_PIN_3;
-  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-  LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /**/
   GPIO_InitStruct.Pin = ENC1_BTN_Pin;

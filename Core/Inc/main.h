@@ -80,8 +80,14 @@ void Error_Handler(void);
 #define CENTER_BTN_GPIO_Port GPIOC
 #define RIGHT_BTN_Pin LL_GPIO_PIN_3
 #define RIGHT_BTN_GPIO_Port GPIOC
+#define ENC_IN2_Pin LL_GPIO_PIN_0
+#define ENC_IN2_GPIO_Port GPIOA
+#define ENC_IN1_Pin LL_GPIO_PIN_1
+#define ENC_IN1_GPIO_Port GPIOA
 #define ENC1_BTN_Pin LL_GPIO_PIN_2
 #define ENC1_BTN_GPIO_Port GPIOA
+#define PUL_DIR1_Pin LL_GPIO_PIN_7
+#define PUL_DIR1_GPIO_Port GPIOA
 #define RST_Pin LL_GPIO_PIN_0
 #define RST_GPIO_Port GPIOB
 #define DC_Pin LL_GPIO_PIN_1
@@ -98,8 +104,6 @@ void Error_Handler(void);
 #define DIR2_GPIO_Port GPIOC
 #define PUL_DRIVE2_Pin LL_GPIO_PIN_8
 #define PUL_DRIVE2_GPIO_Port GPIOA
-#define PUL_DRIVE1_Pin LL_GPIO_PIN_9
-#define PUL_DRIVE1_GPIO_Port GPIOA
 #define ENABLE1_Pin LL_GPIO_PIN_10
 #define ENABLE1_GPIO_Port GPIOA
 #define DIR1_Pin LL_GPIO_PIN_11

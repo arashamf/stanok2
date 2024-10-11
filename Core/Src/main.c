@@ -105,10 +105,19 @@ int main(void)
   MX_TIM3_Init();
   MX_TIM1_Init();
   MX_TIM4_Init();
+  MX_TIM2_Init();
+  MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
+	#ifdef __USE_DBG
+		sprintf (DBG_buffer,  "start\r\n");
+		DBG_PutString(DBG_buffer);
+	#endif
+	
 	timers_ini ();
+	init_status_flags_drives ();
 	ssd1306_Init();
 	
+	//dbg_menu ();
 	//GetCoilData(Coil1.coil_buffer, rdata_size, EEPROM_MEMORY_PAGE);
 	main_menu ();	
   /* USER CODE END 2 */
@@ -125,10 +134,10 @@ int main(void)
 			switch (key_code) //обработка кода нажатой кнопки
 			{	
 				case KEY_PEDAL_LONG:
-					init_drive_turn (&Coil1);
+					start_drives_turn (&Coil1);
 					break;
 				
-				case KEY_ENC_LONG:
+				case KEY_NULL_LONG:
 					setup_menu (&Pos_Enc1, &Coil1);
 					break;
 				

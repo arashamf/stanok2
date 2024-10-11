@@ -13,11 +13,10 @@ extern "C" {
 // Defines ---------------------------------------------------------------------//
 
 // Prototypes ------------------------------------------------------------------//
-void dr1_one_full_turn (void);
-void init_drive_turn (coil_data_t * );
-uint8_t read_encoder1_rotation (encoder_data_t * );
-void encoder_reset (encoder_data_t * );
-void TIM_counter_PWM_Callback (void);
+void init_status_flags_drives (void);
+void start_drives_turn (coil_data_t * );
+void Counter_PWM_Drive1_Callback (void);
+void Counter_PWM_Drive2_Callback (void);
 void Left_Sensor_Callback (void);
 void Right_Sensor_Callback (void);
 

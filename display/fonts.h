@@ -24,7 +24,7 @@ typedef struct
 
 
 extern FontDef_t	 	Font_7x10; //7 x 10 pixels font size structure 
-extern FontDef_t 		Font_11x18; //11 x 18 pixels font size structure 
+extern FontDef_t 		Font_11x17; //11 x 18 pixels font size structure 
 extern FontDef_t 		Font_16x26; //16 x 26 pixels font size structure 
 
 /* Functions -----------------------------------------------------------------*/

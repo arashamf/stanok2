@@ -62,7 +62,6 @@ uint16_t scan_keys (void)
 	{
 		if (end_bounce == SET) //если флаг окончания дребезга установлен
 		{
-		//	end_bounce = RESET;  //сброс флага
 			if(scan_buttons_GPIO(key_code) == ON)	 // если кнопка отпущена (нажатие менее 50 мс это дребезг)
 			{
 				key_state = KEY_STATE_OFF; //переход в начальное состояние ожидания нажатия кнопки

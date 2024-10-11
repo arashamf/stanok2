@@ -79,7 +79,7 @@ void SSD1306_DrawCircle(int16_t , int16_t , int16_t , SSD1306_COLOR_t );
 void SSD1306_DrawFilledCircle(int16_t , int16_t , int16_t , SSD1306_COLOR_t );
 
 void void_screen (void);
-void default_screen (FontDef_t * , int16_t , int16_t );
+void default_screen (FontDef_t * , int16_t , int16_t , uint8_t );
 void setup_coil_screen (FontDef_t * , uint8_t , int32_t );
 
 // Variables ------------------------------------------------------------------//

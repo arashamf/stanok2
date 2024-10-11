@@ -516,11 +516,11 @@ void void_screen (void)
 }
 
 //--------------------------------ф-я отображения основного меню--------------------------------//
-void default_screen (FontDef_t * font, int16_t r_number, int16_t s_number)
+void default_screen (FontDef_t * font, int16_t r_number, int16_t s_number, uint8_t number_coil)
 {
-	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE+5, LCD_DEFAULT_Y_SIZE+6);
 	SSD1306_Clear_Screen ();	
-	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "%03d/%03d", r_number, s_number);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "%uC:%03d/%03d",number_coil, r_number, s_number);
 	SSD1306_Puts (LCD_buff , font, SSD1306_COLOR_WHITE);
 	SSD1306_UpdateScreen();
 }
@@ -528,9 +528,9 @@ void default_screen (FontDef_t * font, int16_t r_number, int16_t s_number)
 //------------------------ф-я отображения установленного количества витков------------------------//
 void setup_coil_screen (FontDef_t * font, uint8_t count, int32_t number_click)
 {
-	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE+2);
 	SSD1306_Clear_Screen ();
-	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "%uC:%04d", count, number_click);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "%uC:%03d", count, number_click);
 	SSD1306_Puts (LCD_buff , font, SSD1306_COLOR_WHITE);
 	SSD1306_UpdateScreen();
 }

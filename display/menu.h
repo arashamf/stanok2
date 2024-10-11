@@ -17,7 +17,8 @@ extern "C" {
 // Prototypes ------------------------------------------------------------------//
 void setup_menu (encoder_data_t *, coil_data_t * );
 void main_menu (void);
-void turn_drive_menu (coil_data_t * );
+void dbg_menu (void);
+void turn_drive_menu (coil_data_t * , uint8_t );
 // Variables ------------------------------------------------------------------//
 
 #ifdef __cplusplus
