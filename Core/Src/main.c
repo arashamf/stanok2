@@ -108,6 +108,7 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
+	
 	#ifdef __USE_DBG
 		sprintf (DBG_buffer,  "start\r\n");
 		DBG_PutString(DBG_buffer);

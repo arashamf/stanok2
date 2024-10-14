@@ -20,6 +20,7 @@ extern "C" {
 #define 	STEP_IN_TURN				200		 //количество шагов (1,8гр) в одном полном обороте (360 гр)
 #define 	STEP_DIV 						(PULSE_IN_TURN/STEP_IN_TURN)		//количество микрошагов (8) в одном шаге двигателя (1,8гр)
 #define 	STEP_TURNOVER				(PULSE_IN_TURN*REDUCER) //количество микрошагов в одном полном обороте (360 гр) с учётом делителя драйвера и редуктора 
+#define 	BASE_PERIOD_DR2			1000
 
 #define 	STEP18_IN_SEC					6480 							//количество секунд в одном шаге двигателя (1,8гр)
 #define 	CIRCLE_IN_SEC					(STEP18_IN_SEC*CIRCLE_IN_STEP)	//количество секунд в одном полном обороте двигателя (360 гр)
@@ -59,6 +60,8 @@ typedef struct
 		struct 
 		{
 			uint8_t number_coil;
+			uint16_t rotation_speed;
+			uint16_t gear_ratio;
 			uint16_t set_coil[MAX_NUMBER_COIL]; 		
 			uint16_t remains_coil[MAX_NUMBER_COIL]; 		
 		};
@@ -87,6 +90,7 @@ typedef struct
 	uint16_t Compare_Drive2; //значение сравнения двигателя 2
 	uint16_t Period_Drive1; //период импульса ШИМ двигателя 1
 	uint16_t Period_Drive2; //период импульса ШИМ двигателя 2
+	uint16_t number_cnt_PWM_DR1; //счётчик импульсов двигателя 1
 	uint16_t turn_number; //количество совершённых оборотов
 } PWM_data_t;
 

@@ -34,9 +34,11 @@ extern "C" {
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN Private defines */
+// TIM_PWM_Drive2 - управление верхним двигателем (намоточный)
 #define 	TIM_PWM_Drive2 											TIM1
 #define		Drive2_PWM_Channel									LL_TIM_CHANNEL_CH1 
 
+// TIM_PWM_Drive1 - управление нижним двигателем (сдвигающий)
 #define 	TIM_PWM_Drive1 											TIM3
 #define		Drive1_PWM_Channel									LL_TIM_CHANNEL_CH2 
 

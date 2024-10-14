@@ -251,7 +251,7 @@ void MX_TIM5_Init(void)
   /* USER CODE BEGIN TIM5_Init 1 */
 
   /* USER CODE END TIM5_Init 1 */
-  TIM_InitStruct.Prescaler = 15;
+  TIM_InitStruct.Prescaler = 0;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
   TIM_InitStruct.Autoreload = 199;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
@@ -280,10 +280,13 @@ void MX_TIM5_Init(void)
 //-----------------------------------------------------------------------------------------------//
 void Drives_PWM_start(PWM_data_t * PWM_data) 
 {
-//	LL_TIM_ClearFlag_UPDATE (TIM_PWM_Drive1);
-//	LL_TIM_ClearFlag_UPDATE (TIM_PWM_Drive2);
-	LL_TIM_DisableCounter(TIM_PWM_Drive1); //выключение таймера 
-	LL_TIM_DisableCounter(TIM_PWM_Drive2); //выключение таймера
+	LL_TIM_DisableCounter(TIM_cnt_PWM_DRIVE1);
+	LL_TIM_SetAutoReload(TIM_cnt_PWM_DRIVE1, PWM_data->number_cnt_PWM_DR1);
+	LL_TIM_SetCounter(TIM_cnt_PWM_DRIVE1, 0); 		//сброс счЄтного регистра
+	LL_TIM_EnableCounter(TIM_cnt_PWM_DRIVE1); 		//включение таймера	
+	
+	LL_TIM_DisableCounter(TIM_PWM_Drive1); //выключение таймера, управл€ющий верхним двигателем (намоточным)
+	LL_TIM_DisableCounter(TIM_PWM_Drive2); //выключение таймера, управл€ющий нижнем двигателем (сдвигающем)
 	LL_TIM_SetCounter(TIM_PWM_Drive1, 0);
 	LL_TIM_SetCounter(TIM_PWM_Drive2, 0);
 	LL_TIM_SetAutoReload(TIM_PWM_Drive1, PWM_data-> Period_Drive1); 	//Set the Autoreload value 

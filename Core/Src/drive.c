@@ -29,14 +29,17 @@ void init_status_flags_drives (void)
 //-------------------------------------------------------------------------------------------------------------//
 static void init_drives_setting (coil_data_t * HandleCoilData, uint8_t number)
 {
-	Drives_PWM.Compare_Drive1		= 	249;
-	Drives_PWM.Compare_Drive2 	= 	499;
-	Drives_PWM.Period_Drive1 		= 	499;
-	Drives_PWM.Period_Drive2 		= 	999;
+	uint32_t period_drive2 = (BASE_PERIOD_DR2*100)/HandleCoilData->rotation_speed;
+	uint32_t period_drive1 =(period_drive2*100)/HandleCoilData->gear_ratio;
+	Drives_PWM.Compare_Drive1		= 	(period_drive1/2)-1; 	//длительность импульса нижнего (сдвигающего) двигателя
+	Drives_PWM.Period_Drive1 		= 	period_drive1-1; 	//период импульса нижнего (сдвигающего) двигателя
+	Drives_PWM.Compare_Drive2 	= 	(period_drive2/2) - 1; //длительность импульса верхнего (мотающего) двигателя
+	Drives_PWM.Period_Drive2 		=		period_drive2-1; 	//период импульса верхнего (мотающего) двигателя
 	Drives_PWM.turn_number = (HandleCoilData->set_coil[number]); //сохранение количества обмоток
+	Drives_PWM.number_cnt_PWM_DR1 = (PULSE_IN_TURN*HandleCoilData->gear_ratio)/100;
 	
 	#ifdef __USE_DBG
-		sprintf (DBG_buffer,  "numb=%u,set=%u,turn=%u\r\n",number, HandleCoilData->set_coil[number], Drives_PWM.turn_number);
+		sprintf (DBG_buffer,  "ratio=%u,Period=%u,Compare=%u\r\n", HandleCoilData->gear_ratio, Drives_PWM.Period_Drive1, Drives_PWM.Compare_Drive1);
 		DBG_PutString(DBG_buffer);
 	#endif
 }

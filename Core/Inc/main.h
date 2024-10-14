@@ -121,7 +121,7 @@ void Error_Handler(void);
 #define EEPROM_SDA_Pin LL_GPIO_PIN_9
 #define EEPROM_SDA_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
-#define __USE_DBG
+//#define __USE_DBG
 #define __SPI_DMA_MODE
 
 /* USER CODE END Private defines */

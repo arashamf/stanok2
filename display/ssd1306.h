@@ -81,7 +81,8 @@ void SSD1306_DrawFilledCircle(int16_t , int16_t , int16_t , SSD1306_COLOR_t );
 void void_screen (void);
 void default_screen (FontDef_t * , int16_t , int16_t , uint8_t );
 void setup_coil_screen (FontDef_t * , uint8_t , int32_t );
-
+void setup_ratio_screen (FontDef_t * , int16_t);
+void setup_speed_screen (FontDef_t * ,int16_t );
 // Variables ------------------------------------------------------------------//
 extern uint8_t LCD_buff[];
 extern uint8_t SSD1306_Buffer[];

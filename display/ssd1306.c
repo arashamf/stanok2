@@ -525,6 +525,30 @@ void default_screen (FontDef_t * font, int16_t r_number, int16_t s_number, uint8
 	SSD1306_UpdateScreen();
 }
 
+//----------------------ф-я отображения установленного передаточного соотношения----------------------//
+void setup_ratio_screen (FontDef_t * font, int16_t gear_ratio)
+{
+	uint8_t int_number = gear_ratio/100;
+	uint8_t fraction_part = gear_ratio%100;
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE+2);
+	SSD1306_Clear_Screen ();
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "RT:%u.%02u", int_number, fraction_part);
+	SSD1306_Puts (LCD_buff , font, SSD1306_COLOR_WHITE);
+	SSD1306_UpdateScreen();
+}
+
+//-------------------------------ф-я отображения установленной скорости-------------------------------//
+void setup_speed_screen (FontDef_t * font,int16_t rotation_speed)
+{
+	uint8_t int_number = rotation_speed/100;
+	uint8_t fraction_part = rotation_speed%100;
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE+2);
+	SSD1306_Clear_Screen ();
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "SP:%u.%02u", int_number, fraction_part);
+	SSD1306_Puts (LCD_buff , font, SSD1306_COLOR_WHITE);
+	SSD1306_UpdateScreen();
+}
+
 //------------------------ф-я отображения установленного количества витков------------------------//
 void setup_coil_screen (FontDef_t * font, uint8_t count, int32_t number_click)
 {
