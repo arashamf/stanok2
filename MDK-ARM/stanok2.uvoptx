@@ -140,7 +140,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>CMSIS_AGDI</Key>
-          <Name>-X"CMSIS-DAP_LU" -ULU_2022_8888 -O462 -S0 -C0 -P00000000 -N00("ARM CoreSight SW-DP") -D00(1BA01477) -L00(0) -TO65554 -TC10000000 -TT10000000 -TP20 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -FO7 -FD20000000 -FC1000 -FN1 -FF0STM32F10x_CL.FLM -FS08000000 -FL080000 -FP0($$Device:STM32F105RB$Flash\STM32F10x_CL.FLM)</Name>
+          <Name>-X"CMSIS-DAP_LU" -ULU_2022_8888 -O718 -S0 -C0 -P00000000 -N00("ARM CoreSight SW-DP") -D00(1BA01477) -L00(0) -TO65554 -TC10000000 -TT10000000 -TP20 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -FO7 -FD20000000 -FC1000 -FN1 -FF0STM32F10x_CL.FLM -FS08000000 -FL080000 -FP0($$Device:STM32F105RB$Flash\STM32F10x_CL.FLM)</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -159,7 +159,7 @@
           <Type>0</Type>
           <LineNumber>215</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134220348</Address>
+          <Address>134219976</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -215,20 +215,12 @@
       <pMultCmdsp></pMultCmdsp>
       <SystemViewers>
         <Entry>
-          <Name>System Viewer\TIM1</Name>
-          <WinId>35901</WinId>
-        </Entry>
-        <Entry>
-          <Name>System Viewer\TIM3</Name>
+          <Name>System Viewer\GPIOC</Name>
           <WinId>35902</WinId>
         </Entry>
         <Entry>
-          <Name>System Viewer\TIM4</Name>
-          <WinId>35905</WinId>
-        </Entry>
-        <Entry>
-          <Name>System Viewer\TIM5</Name>
-          <WinId>35904</WinId>
+          <Name>System Viewer\TIM1</Name>
+          <WinId>35901</WinId>
         </Entry>
       </SystemViewers>
       <DebugDescription>

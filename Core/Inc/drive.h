@@ -14,7 +14,7 @@ extern "C" {
 
 // Prototypes ------------------------------------------------------------------//
 void init_status_flags_drives (void);
-void start_drives_turn (coil_data_t * );
+void start_drives_turn (uint8_t , coil_data_t * );
 void Counter_PWM_Drive1_Callback (void);
 void Counter_PWM_Drive2_Callback (void);
 void Left_Sensor_Callback (void);

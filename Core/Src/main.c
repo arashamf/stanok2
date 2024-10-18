@@ -53,16 +53,22 @@
 
 /* USER CODE BEGIN PV */
 encoder_data_t Pos_Enc1 = {0}; //данные энкодера
-coil_data_t Coil1 = {0};
-uint8_t rdata_size = sizeof(Coil1.coil_buffer);
+coil_data_t preset1 = {0};
+coil_data_t preset2 = {0};
+coil_data_t preset3 = {0};
+coil_data_t preset4 = {0};
+coil_data_t * preset_ptr[4];
+uint8_t rdata_size = sizeof(preset1.coil_buffer);
 
+uint8_t count_delay = 0;
 __IO uint16_t key_code = NO_KEY;
+__IO uint8_t drive_mode = NO_PRESET;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+void init_preset_struct (coil_data_t ** );
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -116,11 +122,24 @@ int main(void)
 	
 	timers_ini ();
 	init_status_flags_drives ();
-	ssd1306_Init();
-	
-	//dbg_menu ();
+	init_preset_struct (preset_ptr);
 	//GetCoilData(Coil1.coil_buffer, rdata_size, EEPROM_MEMORY_PAGE);
-	main_menu ();	
+	ssd1306_Init();	
+	start_menu ();
+	
+	while (count_delay < START_DELAY) //задержка 1с
+	{
+		if ((key_code = start_scan_key_PEDAL()) == NO_KEY) 
+		{	count_delay++; }
+		else
+		{
+			release_pedal_menu ();
+			while ((key_code = start_scan_key_PEDAL()) != NO_KEY) {}
+		}	
+		HAL_Delay (10);
+	}
+	
+	main_menu_select_preset_screen();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -135,11 +154,11 @@ int main(void)
 			switch (key_code) //обработка кода нажатой кнопки
 			{	
 				case KEY_PEDAL_LONG:
-					start_drives_turn (&Coil1);
+					start_drives_turn (drive_mode, preset_ptr[drive_mode-1]);
 					break;
 				
-				case KEY_NULL_LONG:
-					setup_menu (&Pos_Enc1, &Coil1);
+				case KEY_MODE_LONG:
+					drive_mode = menu_select_preset(&Pos_Enc1, preset_ptr);	
 					break;
 				
 				default:
@@ -196,7 +215,13 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void init_preset_struct (coil_data_t ** preset)
+{
+	*(preset+0) = &preset1;
+	*(preset+1) = &preset2;
+	*(preset+2) = &preset3;
+	*(preset+3) = &preset4;
+}
 /* USER CODE END 4 */
 
 /**

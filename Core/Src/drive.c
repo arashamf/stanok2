@@ -57,7 +57,7 @@ static void drives_one_full_turn (void)
 }
 
 //--------------------------------------------------------------------------------------------------------------//
-void start_drives_turn (coil_data_t * HandleCoilData)
+void start_drives_turn (uint8_t numb_preset, coil_data_t * HandleCoilData)
 {
 	
 	for (uint8_t count = 0; count < HandleCoilData->number_coil; count++)
@@ -77,7 +77,7 @@ void start_drives_turn (coil_data_t * HandleCoilData)
 					DBG_PutString(DBG_buffer);
 				#endif
 				
-				turn_drive_menu (HandleCoilData, count); //вывод меню
+				turn_drive_menu (numb_preset, HandleCoilData, count); //вывод меню
 			}
 		}	
 		while	((status_drives.end_turn_drive2 != DRIVE_FREE) && (status_drives.end_turn_drive1 != DRIVE_FREE)) {}				

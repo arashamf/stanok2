@@ -14,6 +14,7 @@ extern "C" {
 //Private defines ------------------------------------------------------------------//
 
 // Prototypes ---------------------------------------------------------------------//
+uint16_t start_scan_key_PEDAL(void);
 uint16_t scan_keys (void);
 
 #ifdef __cplusplus

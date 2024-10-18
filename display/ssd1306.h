@@ -78,11 +78,14 @@ void SSD1306_DrawFilledTriangle(uint16_t , uint16_t , uint16_t , uint16_t , uint
 void SSD1306_DrawCircle(int16_t , int16_t , int16_t , SSD1306_COLOR_t );
 void SSD1306_DrawFilledCircle(int16_t , int16_t , int16_t , SSD1306_COLOR_t );
 
-void void_screen (void);
-void default_screen (FontDef_t * , int16_t , int16_t , uint8_t );
-void setup_coil_screen (FontDef_t * , uint8_t , int32_t );
-void setup_ratio_screen (FontDef_t * , int16_t);
-void setup_speed_screen (FontDef_t * ,int16_t );
+void default_screen (uint8_t , int16_t , int16_t , uint8_t );
+void setup_coil_screen (uint8_t , int32_t );
+void setup_ratio_screen (int16_t);
+void setup_speed_screen (int16_t );
+void main_menu_select_preset_screen (void);
+void menu_select_preset_screen (uint8_t );
+void release_pedal_menu (void);
+void start_menu (void);
 // Variables ------------------------------------------------------------------//
 extern uint8_t LCD_buff[];
 extern uint8_t SSD1306_Buffer[];

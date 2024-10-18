@@ -7,6 +7,12 @@
 #include "typedef.h"
 
 // Declarations and definitions -------------------------------------------------------//
+static void void_screen (void);
+static void clear_buffer_screen (void);
+static void preset1_screen (void);
+static void preset2_screen (void);
+static void preset3_screen (void);
+static void preset4_screen (void);
 
 // Private structure  -----------------------------------------------------------------//
 typedef struct 
@@ -149,7 +155,8 @@ char SSD1306_Putc(char ch, FontDef_t* Font, SSD1306_COLOR_t color)
 	uint32_t i, b, j;
 
 	 // Check available space in LCD 
-	if (SSD1306_X_SIZE <= (SSD1306.CurrentX + Font->FontWidth) ||	SSD1306_Y_SIZE <= (SSD1306.CurrentY + Font->FontHeight)) 
+	//if (SSD1306_X_SIZE <= (SSD1306.CurrentX + Font->FontWidth) ||	SSD1306_Y_SIZE <= (SSD1306.CurrentY + Font->FontHeight)) 
+	if (SSD1306_X_SIZE <= (SSD1306.CurrentX) ||	SSD1306_Y_SIZE <= (SSD1306.CurrentY)) 
 	{	return 0;	}     // Error
 
 	for (i = 0; i < Font->FontHeight; i++) 	// Go through font 
@@ -508,53 +515,186 @@ void SSD1306_DrawFilledCircle(int16_t x0, int16_t y0, int16_t r, SSD1306_COLOR_t
 }
 
 //-----------------------------------------------------------------------------------------------//
-void void_screen (void)
+static void void_screen (void)
 {
 	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
 	SSD1306_Clear_Screen ();
 	SSD1306_UpdateScreen();
 }
 
-//--------------------------------ф-я отображения основного меню--------------------------------//
-void default_screen (FontDef_t * font, int16_t r_number, int16_t s_number, uint8_t number_coil)
+//-----------------------------------------------------------------------------------------------//
+static void clear_buffer_screen (void)
 {
-	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE+5, LCD_DEFAULT_Y_SIZE+6);
-	SSD1306_Clear_Screen ();	
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
+	SSD1306_Clear_Screen ();
+}
+
+//--------------------------------ф-я отображения основного меню--------------------------------//
+void default_screen (uint8_t numb_preset, int16_t r_number, int16_t s_number, uint8_t number_coil)
+{
+	clear_buffer_screen ();
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "PRESET%u", numb_preset);
+	SSD1306_Puts (LCD_buff , &Font_7x10, SSD1306_COLOR_WHITE);
+	
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE+13);
 	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "%uC:%03d/%03d",number_coil, r_number, s_number);
-	SSD1306_Puts (LCD_buff , font, SSD1306_COLOR_WHITE);
+	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);
 	SSD1306_UpdateScreen();
 }
 
 //----------------------ф-я отображения установленного передаточного соотношения----------------------//
-void setup_ratio_screen (FontDef_t * font, int16_t gear_ratio)
+void setup_ratio_screen (int16_t gear_ratio)
 {
 	uint8_t int_number = gear_ratio/100;
 	uint8_t fraction_part = gear_ratio%100;
-	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE+2);
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE+5);
 	SSD1306_Clear_Screen ();
 	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "RT:%u.%02u", int_number, fraction_part);
-	SSD1306_Puts (LCD_buff , font, SSD1306_COLOR_WHITE);
+	SSD1306_Puts (LCD_buff , &Font_16x26, SSD1306_COLOR_WHITE);
 	SSD1306_UpdateScreen();
 }
 
 //-------------------------------ф-я отображения установленной скорости-------------------------------//
-void setup_speed_screen (FontDef_t * font,int16_t rotation_speed)
+void setup_speed_screen (int16_t rotation_speed)
 {
 	uint8_t int_number = rotation_speed/100;
 	uint8_t fraction_part = rotation_speed%100;
-	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE+2);
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE+5);
 	SSD1306_Clear_Screen ();
 	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "SP:%u.%02u", int_number, fraction_part);
-	SSD1306_Puts (LCD_buff , font, SSD1306_COLOR_WHITE);
+	SSD1306_Puts (LCD_buff , &Font_16x26, SSD1306_COLOR_WHITE);
 	SSD1306_UpdateScreen();
 }
 
 //------------------------ф-я отображения установленного количества витков------------------------//
-void setup_coil_screen (FontDef_t * font, uint8_t count, int32_t number_click)
+void setup_coil_screen (uint8_t count, int32_t number_click)
 {
-	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE+2);
 	SSD1306_Clear_Screen ();
+	
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE+5);
 	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "%uC:%03d", count, number_click);
-	SSD1306_Puts (LCD_buff , font, SSD1306_COLOR_WHITE);
+	SSD1306_Puts (LCD_buff , &Font_16x26, SSD1306_COLOR_WHITE);
+	SSD1306_UpdateScreen();
+}
+
+//-----------------------------------------------------------------------------------------------//
+void main_menu_select_preset_screen (void)
+{
+	clear_buffer_screen ();
+	
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "SELECT");
+	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);
+	
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE+60, LCD_DEFAULT_Y_SIZE+16);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "PRESET");
+	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);
+	SSD1306_UpdateScreen();	
+}
+
+//-----------------------------------------------------------------------------------------------//
+static void preset1_screen (void)
+{
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, ">PRESET1");
+	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);
+	
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE+16);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, " PRESET2");
+	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);
+	SSD1306_UpdateScreen();	
+}
+
+//-----------------------------------------------------------------------------------------------//
+static void preset2_screen (void)
+{
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, " PRESET1");
+	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);
+	
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE+16);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, ">PRESET2");
+	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);
+	SSD1306_UpdateScreen();	
+}
+
+//-----------------------------------------------------------------------------------------------//
+static void preset3_screen (void)
+{
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, ">PRESET3");
+	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);
+	
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE+16);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, " PRESET4");
+	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);
+	SSD1306_UpdateScreen();
+}
+
+//-----------------------------------------------------------------------------------------------//
+static void preset4_screen (void)
+{	
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, " PRESET3");
+	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);
+	
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE+16);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, ">PRESET4");
+	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);
+	SSD1306_UpdateScreen();	
+}
+
+//-----------------------------------------------------------------------------------------------//
+void menu_select_preset_screen (uint8_t screen_mode)
+{
+	switch (screen_mode)
+	{	
+		case 1:
+			clear_buffer_screen ();
+			preset1_screen();
+			break;
+				
+		case 2:
+			clear_buffer_screen ();
+			preset2_screen();
+			break;
+				
+		case 3:
+			clear_buffer_screen ();
+			preset3_screen();
+			break;
+				
+		case 4:
+			clear_buffer_screen ();
+			preset4_screen();
+			break;
+				
+		default:
+			break;	
+	}	
+}
+
+//-----------------------------------------------------------------------------------------------------//
+void release_pedal_menu (void)
+{
+	clear_buffer_screen ();
+	
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "RELEASE");
+	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);
+	
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE+65, LCD_DEFAULT_Y_SIZE+16);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "PEDAL");
+	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);
+	SSD1306_UpdateScreen();	
+}
+
+//-----------------------------------------------------------------------------------------------------//
+void start_menu (void)
+{
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "START");
+	SSD1306_Puts (LCD_buff , &Font_16x26, SSD1306_COLOR_WHITE);
 	SSD1306_UpdateScreen();
 }

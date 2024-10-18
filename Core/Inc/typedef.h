@@ -40,7 +40,9 @@ extern "C" {
 //#define 	EEPROM_NUMBER_BYTES 		4
 #define 	CPU_CLOCK_VALUE						(72000000UL)		//частота контроллера 
 #define 	MS_PER_SECOND							1000 
+#define 	START_DELAY								0x64
 #define 	MAX_NUMBER_COIL 					3
+#define 	MAX_PRESET 								4
 
 // Exported types ------------------------------------------------------------------//
 //----------------------------------------------------------------------------------//
@@ -65,7 +67,7 @@ typedef struct
 			uint16_t set_coil[MAX_NUMBER_COIL]; 		
 			uint16_t remains_coil[MAX_NUMBER_COIL]; 		
 		};
-		uint8_t coil_buffer[MAX_NUMBER_COIL*MAX_NUMBER_COIL*2+1];
+		uint8_t coil_buffer[MAX_NUMBER_COIL*2*2+5];
 	};
 	struct coil_data_t *next;
 } coil_data_t;
@@ -101,11 +103,11 @@ typedef enum
 {
 	NO_KEY 						= 	0x00,			//кнопка не нажата	
 	KEY_PEDAL_SHORT 	= 	0x01,			//короткое нажатие центральной кнопки
-	KEY_PEDAL_LONG 	= 		0x02,			//длинное нажатие центральной кнопки
+	KEY_PEDAL_LONG 		= 	0x02,			//длинное нажатие центральной кнопки
 	KEY_ENC_SHORT			= 	0x03,			//короткое нажатие кнопки энкодера
 	KEY_ENC_LONG			=		0x04,			//длинное нажатие кнопки энкодера
-	KEY_NULL_SHORT		=		0x05,			//короткое нажатие выбора режима
-	KEY_NULL_LONG			=		0x06,			//короткое нажатие выбора режима
+	KEY_MODE_SHORT		=		0x05,			//короткое нажатие выбора режима
+	KEY_MODE_LONG			=		0x06,			//короткое нажатие выбора режима
 } KEY_CODE_t; 					
 
 //-----------------------------------------------------------------------------------//
@@ -117,6 +119,16 @@ typedef enum
 	KEY_STATE_AUTOREPEAT			,	 			//режим - режим ожидания (автоповтора) отжатия кнопки
 	KEY_STATE_WAIT_TURNOFF
 } KEY_STATE_t; 									//статус сканирования клавиатуры
+
+//-----------------------------------------------------------------------------------//
+typedef enum 
+{
+	NO_PRESET          	  = 0 ,
+	PRESET1 							= 1	,				
+	PRESET2										,				
+	PRESET3										, 			
+	PRESET4										,	 			
+} PRESET_t; 									
 
 //-----------------------------------------------------------------------------------//
 struct KEY_MACHINE_t
