@@ -18,25 +18,26 @@ __IO float step_unit = ((float)STEP18_IN_SEC/(float)STEP_DIV); //количество секу
 PWM_data_t Drives_PWM = {0};
 volatile STATUS_FLAG_DRIVE_t status_drives; 
 
-//--------------------------------------------------------------------------------------------------------------//
+//-----------------------------------------------------------------------------------------------------//
 void init_status_flags_drives (void) 
 {
-	status_drives.direction = LEFT; //двигатели не активны, сдвиг катушки влево
-	status_drives.end_turn_drive1 = DRIVE_FREE;
-	status_drives.end_turn_drive2 = DRIVE_FREE;
+	status_drives.direction 			= 	LEFT; //двигатели не активны, сдвиг катушки влево
+	status_drives.end_turn_drive1 = 	DRIVE_FREE; //двигатель 1 свободен
+	status_drives.end_turn_drive2 = 	DRIVE_FREE; //двигатель 2 свободен
+	status_drives.stop_drives			=		START; //разрешение на запуск двигателей
 }
 
-//-------------------------------------------------------------------------------------------------------------//
+//-----------------------------------------------------------------------------------------------------//
 static void init_drives_setting (coil_data_t * HandleCoilData, uint8_t number)
 {
-	uint32_t period_drive2 = (BASE_PERIOD_DR2*100)/HandleCoilData->rotation_speed;
-	uint32_t period_drive1 =(period_drive2*100)/HandleCoilData->gear_ratio;
-	Drives_PWM.Compare_Drive1		= 	(period_drive1/2)-1; 	//длительность импульса нижнего (сдвигающего) двигателя
-	Drives_PWM.Period_Drive1 		= 	period_drive1-1; 	//период импульса нижнего (сдвигающего) двигателя
-	Drives_PWM.Compare_Drive2 	= 	(period_drive2/2) - 1; //длительность импульса верхнего (мотающего) двигателя
-	Drives_PWM.Period_Drive2 		=		period_drive2-1; 	//период импульса верхнего (мотающего) двигателя
-	Drives_PWM.turn_number = (HandleCoilData->set_coil[number]); //сохранение количества обмоток
-	Drives_PWM.number_cnt_PWM_DR1 = (PULSE_IN_TURN*HandleCoilData->gear_ratio)/100;
+	uint32_t period_drive2 		=	(BASE_PERIOD_DR2*100)/HandleCoilData->rotation_speed; //период импульса верхнего (мотающего) двигателя
+	uint32_t period_drive1 		=	(period_drive2*100)/HandleCoilData->gear_ratio;			//период импульса нижнего (сдвигающего) двигателя
+	Drives_PWM.Compare_Drive1	=	(period_drive1/2)-1; 	//длительность импульса нижнего (сдвигающего) двигателя 1
+	Drives_PWM.Period_Drive1	=	(period_drive1-1); 	//сохранение периода нижнего (сдвигающего) двигателя 1
+	Drives_PWM.Compare_Drive2	=	(period_drive2/2) - 1; //длительность импульса верхнего (мотающего) двигателя 2
+	Drives_PWM.Period_Drive2	=	(period_drive2-1); 	//сохранение периода верхнего (мотающего) двигателя 2
+	Drives_PWM.turn_number 		= (HandleCoilData->remains_coil[number]); //сохранение количества полных оборотов 
+	Drives_PWM.number_cnt_PWM_DR1 = (PULSE_IN_TURN*HandleCoilData->gear_ratio)/100; //отсечка для таймера считающего количество импульсов таймера управляющего нижним двигателем
 	
 	#ifdef __USE_DBG
 		sprintf (DBG_buffer,  "ratio=%u,Period=%u,Compare=%u\r\n", HandleCoilData->gear_ratio, Drives_PWM.Period_Drive1, Drives_PWM.Compare_Drive1);
@@ -44,32 +45,45 @@ static void init_drives_setting (coil_data_t * HandleCoilData, uint8_t number)
 	#endif
 }
 
-//--------------------------инициализация и запуск вращения полного оборота двигателя--------------------------//
+//----------------------инициализация и запуск вращения полного оборота двигателя----------------------//
 static void drives_one_full_turn (void) 
 {
-	DRIVE2_ENABLE(ON);
+	DRIVE2_ENABLE(START);		//разрешение включения двигателя 2
 	DIR_DRIVE2 (BACKWARD); //направление вращения двигателя 2
-	DRIVE1_ENABLE(ON);
+	DRIVE1_ENABLE(START); //разрешение включения двигателя 1
 	DIR_DRIVE1 (status_drives.direction); //направление вращения двигателя 1
 	delay_us (3);	
 	
-	Drives_PWM_start (&Drives_PWM);
+	Drives_PWM_start (&Drives_PWM); //загрузка настроек в таймеры
 }
 
-//--------------------------------------------------------------------------------------------------------------//
-void start_drives_turn (uint8_t numb_preset, coil_data_t * HandleCoilData)
+//-----------------------------------------------------------------------------------------------------//
+void settings_preset_reset (uint8_t numb_preset, coil_data_t * HandleCoilData)
 {
-	
-	for (uint8_t count = 0; count < HandleCoilData->number_coil; count++)
+	for (uint8_t count = 0; count < HandleCoilData->set_numb_winding; count++)
 	{
-		init_drives_setting (HandleCoilData, count);
+		HandleCoilData->remains_coil[count] = HandleCoilData->set_coil[count];
+	}
+	HandleCoilData->complet_winding = 0;
+	turn_drive_menu (numb_preset, HandleCoilData, HandleCoilData->complet_winding); //вывод меню
+}
+
+//-----------------------------------------------------------------------------------------------------//
+int8_t start_drives_turn (uint8_t numb_preset, coil_data_t * HandleCoilData)
+{
+	uint8_t count = 0;
+	if(HandleCoilData->complet_winding < HandleCoilData->set_numb_winding) //если количество намотанных обмоток меньше необходимого количества обмоток
+	{
+		count = HandleCoilData->complet_winding; //текущий номер обмотки
+		init_drives_setting (HandleCoilData, count); //расчёт настроек двигателей
 		while (HandleCoilData->remains_coil[count] > 0) //пока количество оставшихся витков обмотки больше нуля
 		{
-			if ((status_drives.end_turn_drive2 == DRIVE_FREE) && (status_drives.end_turn_drive1 == DRIVE_FREE)) //если двигатель 2 не активен
+			if ((status_drives.end_turn_drive2 == DRIVE_FREE) && (status_drives.end_turn_drive1 == DRIVE_FREE) 
+				 && (status_drives.stop_drives == START)) //проверка флагов (двигателя не вращаются и разрешение на их запуск получено)
 			{
 				HandleCoilData->remains_coil[count] = (Drives_PWM.turn_number-1); //сохранение количества оставшихся обмоток				
-				status_drives.end_turn_drive2 = DRIVE_BUSY; //двигатель активен
-				status_drives.end_turn_drive1 = DRIVE_BUSY;
+				status_drives.end_turn_drive2 = DRIVE_BUSY; //двигатель 2 занят (активен)
+				status_drives.end_turn_drive1 = DRIVE_BUSY; //двигатель 1 занят (активен)
 				drives_one_full_turn(); //запуск вращения на один полный оборот
 				
 				#ifdef __USE_DBG
@@ -77,14 +91,24 @@ void start_drives_turn (uint8_t numb_preset, coil_data_t * HandleCoilData)
 					DBG_PutString(DBG_buffer);
 				#endif
 				
-				turn_drive_menu (numb_preset, HandleCoilData, count); //вывод меню
+				turn_drive_menu (numb_preset, HandleCoilData, count); //вывод меню			
 			}
-		}	
-		while	((status_drives.end_turn_drive2 != DRIVE_FREE) && (status_drives.end_turn_drive1 != DRIVE_FREE)) {}				
+			if	(scan_button_PEDAL() == OFF) //если педаль была отпущена
+			{	
+				status_drives.stop_drives = STOP; //установка флага остановки двигателей	
+				return (HandleCoilData->set_numb_winding - HandleCoilData->complet_winding);			
+			}
+		}
+		HandleCoilData->complet_winding++;
+		while	((status_drives.end_turn_drive2 != DRIVE_FREE) && (status_drives.end_turn_drive1 != DRIVE_FREE)) 
+		{} //ожидание завершения оборотов двигателей
+		status_drives.stop_drives = STOP; //установка флага остановки двигателей		
+		return (HandleCoilData->set_numb_winding - HandleCoilData->complet_winding);	
 	}
+	return -1;
 }
 
-//---------------------------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------//
 void Counter_PWM_Drive1_Callback (void)
 {
 	#ifdef __USE_DBG
@@ -92,11 +116,11 @@ void Counter_PWM_Drive1_Callback (void)
 		DBG_PutString(DBG_buffer);
 	#endif
 	
-	DRIVE1_ENABLE(OFF); //выключение двигателя 1
+	DRIVE1_ENABLE(STOP); //выключение двигателя 1
 	status_drives.end_turn_drive1 = DRIVE_FREE; //двигатель 1 не активен
 }
 
-//---------------------------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------//
 void Counter_PWM_Drive2_Callback (void)
 {
 	#ifdef __USE_DBG
@@ -104,26 +128,26 @@ void Counter_PWM_Drive2_Callback (void)
 		DBG_PutString(DBG_buffer);
 	#endif
 	
-	DRIVE2_ENABLE(OFF);  //выключение двигателя 2
+	DRIVE2_ENABLE(STOP);  //выключение двигателя 2
 	status_drives.end_turn_drive2 = DRIVE_FREE; //двигатель 2 не активен
-	if (Drives_PWM.turn_number > 0)
+	if (Drives_PWM.turn_number > 0) //если количество оборотов верхнего двигателя больше нуля
 	{	Drives_PWM.turn_number--; }
 }
 
-//------------------------------------------------LL_EXTI_LINE_12------------------------------------------------//
+//-------------------------------------------LL_EXTI_LINE_12-------------------------------------------//
 void Left_Sensor_Callback (void)
 {
-	DRIVE1_ENABLE(OFF);
-	status_drives.direction = (RIGHT);
+	DRIVE1_ENABLE(STOP);  //выключение двигателя 1
+	status_drives.direction = (RIGHT); //левый датчик меняет направление намотки направо
 	DIR_DRIVE1 (status_drives.direction);
-	DRIVE1_ENABLE(ON);
+	DRIVE1_ENABLE(START);  //включение двигателя 1
 }
 
-//-------------------------------------------------LL_EXTI_LINE_2-------------------------------------------------//
+//--------------------------------------------LL_EXTI_LINE_2--------------------------------------------//
 void Right_Sensor_Callback (void)
 {	
-	DRIVE1_ENABLE(OFF);
-	status_drives.direction = (LEFT);
+	DRIVE1_ENABLE(STOP); //выключение двигателя 1
+	status_drives.direction = (LEFT); //правый датчик меняет направление намотки налево
 	DIR_DRIVE1 (status_drives.direction);
-	DRIVE1_ENABLE(ON);
+	DRIVE1_ENABLE(START); //включение двигателя 1
 }

@@ -16,7 +16,7 @@ extern "C" {
 // Prototypes ---------------------------------------------------------------------//
 uint16_t start_scan_key_PEDAL(void);
 uint16_t scan_keys (void);
-
+uint8_t scan_button_PEDAL (void);
 #ifdef __cplusplus
 }
 #endif

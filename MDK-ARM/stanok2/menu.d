@@ -40,7 +40,7 @@ stanok2/menu.o: ..\display\menu.c ..\display\menu.h ..\Core\Inc\main.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_gpio.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h ..\Core\Inc\typedef.h \
-  ..\Core\Inc\main.h ..\display\fonts.h ..\Core\Inc\button.h \
-  ..\Core\Inc\drive.h ..\Core\Inc\typedef.h ..\display\ssd1306.h \
-  ..\display\ssd1306_interface.h ..\Core\Inc\eeprom.h \
+  ..\Core\Inc\main.h ..\display\fonts.h ..\Core\Inc\tim.h \
+  ..\Core\Inc\typedef.h ..\Core\Inc\button.h ..\Core\Inc\drive.h \
+  ..\display\ssd1306.h ..\display\ssd1306_interface.h \
   ..\Core\Inc\encoder.h ..\Core\Inc\usart.h

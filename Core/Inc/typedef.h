@@ -27,8 +27,10 @@ extern "C" {
 #define 	SECOND_PER_MINUTE 		60
 #define 	SECOND_PER_DEGREE 		3600
 
-#define 	ON 												1
+#define 	ON												1
 #define 	OFF 											0
+#define 	START											1
+#define 	STOP 											0
 #define 	FORWARD 									1
 #define 	BACKWARD 									0
 #define 	LEFT 											1
@@ -61,11 +63,12 @@ typedef struct
 	{
 		struct 
 		{
-			uint8_t number_coil;
-			uint16_t rotation_speed;
-			uint16_t gear_ratio;
-			uint16_t set_coil[MAX_NUMBER_COIL]; 		
-			uint16_t remains_coil[MAX_NUMBER_COIL]; 		
+			uint8_t 	set_numb_winding; //установленное количество обмоток
+			uint8_t 	complet_winding; //оставшееся количество обмоток
+			uint16_t	rotation_speed; //коэффициент скорости
+			uint16_t 	gear_ratio; //передаточное соотношение
+			uint16_t 	set_coil[MAX_NUMBER_COIL]; //установленное количество витков обмотки
+			uint16_t 	remains_coil[MAX_NUMBER_COIL]; //оставшееся количество витков обмотки		
 		};
 		uint8_t coil_buffer[MAX_NUMBER_COIL*2*2+5];
 	};
@@ -80,7 +83,8 @@ typedef union
 		uint8_t direction							: 1;
 		uint8_t end_turn_drive1				: 1;
 		uint8_t end_turn_drive2				: 1;
-		uint8_t reserve								:	5;
+		uint8_t stop_drives						:	1;
+		uint8_t reserve								:	4;
 	};
 	uint8_t flag;
 }STATUS_FLAG_DRIVE_t;
@@ -104,8 +108,8 @@ typedef enum
 	NO_KEY 						= 	0x00,			//кнопка не нажата	
 	KEY_PEDAL_SHORT 	= 	0x01,			//короткое нажатие центральной кнопки
 	KEY_PEDAL_LONG 		= 	0x02,			//длинное нажатие центральной кнопки
-	KEY_ENC_SHORT			= 	0x03,			//короткое нажатие кнопки энкодера
-	KEY_ENC_LONG			=		0x04,			//длинное нажатие кнопки энкодера
+	KEY_NULL_SHORT		= 	0x03,			//короткое нажатие кнопки энкодера
+	KEY_NULL_LONG			=		0x04,			//длинное нажатие кнопки энкодера
 	KEY_MODE_SHORT		=		0x05,			//короткое нажатие выбора режима
 	KEY_MODE_LONG			=		0x06,			//короткое нажатие выбора режима
 } KEY_CODE_t; 					

@@ -103,14 +103,14 @@ uint16_t scan_keys (void)
 		if(LL_GPIO_IsInputPinSet(ENC1_BTN_GPIO_Port, ENC1_BTN_Pin) == OFF)	//если кнопка была нажата - получение кода нажатой кнопки
 		{
 			key_state =  KEY_STATE_ON; //переход в режим нажатия кнопки
-			key_code = KEY_ENC_SHORT;
+			key_code = KEY_MODE_SHORT;
 		}
 		else
 		{
 			if (LL_GPIO_IsInputPinSet(CENTER_BTN_GPIO_Port, CENTER_BTN_Pin) == OFF)
 			{
 				key_state =  KEY_STATE_ON;
-				key_code = KEY_MODE_SHORT;
+				key_code = KEY_NULL_SHORT;
 			}
 			else
 			{
@@ -168,8 +168,8 @@ uint16_t scan_keys (void)
 							key_code = KEY_PEDAL_LONG;	
 							break;
 						
-						case KEY_ENC_SHORT:
-							key_code = KEY_ENC_LONG;	
+						case KEY_NULL_SHORT:
+							key_code = KEY_NULL_LONG;	
 							break;
 						
 						case KEY_MODE_SHORT:
@@ -216,22 +216,22 @@ static uint8_t scan_buttons_GPIO (uint16_t key_code)
 	{
 						
 		case KEY_MODE_SHORT:
-			if ((LL_GPIO_IsInputPinSet(CENTER_BTN_GPIO_Port, CENTER_BTN_Pin))	== ON)
+			if ((LL_GPIO_IsInputPinSet(ENC1_BTN_GPIO_Port, CENTER_BTN_Pin))	== ON)
 				pin_status = ON;
 			break;
 						
 		case KEY_MODE_LONG:
-			if ((LL_GPIO_IsInputPinSet(CENTER_BTN_GPIO_Port, CENTER_BTN_Pin))	== ON)
+			if ((LL_GPIO_IsInputPinSet(ENC1_BTN_GPIO_Port, CENTER_BTN_Pin))	== ON)
 				pin_status = ON;
 			break;	
 						
-		case KEY_ENC_SHORT:
-			if ((LL_GPIO_IsInputPinSet(ENC1_BTN_GPIO_Port, ENC1_BTN_Pin))	== ON)
+		case KEY_NULL_SHORT:
+			if ((LL_GPIO_IsInputPinSet(CENTER_BTN_GPIO_Port, ENC1_BTN_Pin))	== ON)
 				pin_status = ON;
 			break;
 						
-		case KEY_ENC_LONG:
-			if ((LL_GPIO_IsInputPinSet(ENC1_BTN_GPIO_Port, ENC1_BTN_Pin))	== ON)
+		case KEY_NULL_LONG:
+			if ((LL_GPIO_IsInputPinSet(CENTER_BTN_GPIO_Port, ENC1_BTN_Pin))	== ON)
 				pin_status = ON;
 			break;
 		
@@ -252,3 +252,11 @@ static uint8_t scan_buttons_GPIO (uint16_t key_code)
 	return pin_status;			
 }
 
+//-------------------------------------------------------------------------------------------------//
+uint8_t scan_button_PEDAL (void)
+{
+	uint8_t status_PEDAL = ON;
+	if (LL_GPIO_IsInputPinSet(MODE_BTN_GPIO_Port, MODE_BTN_Pin) == ON)
+	{	status_PEDAL = OFF; }
+	return status_PEDAL;
+}

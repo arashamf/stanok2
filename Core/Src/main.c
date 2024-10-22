@@ -60,9 +60,6 @@ coil_data_t preset4 = {0};
 coil_data_t * preset_ptr[4];
 uint8_t rdata_size = sizeof(preset1.coil_buffer);
 
-uint8_t count_delay = 0;
-__IO uint16_t key_code = NO_KEY;
-__IO uint8_t drive_mode = NO_PRESET;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -121,24 +118,11 @@ int main(void)
 	#endif
 	
 	timers_ini ();
-	init_status_flags_drives ();
 	init_preset_struct (preset_ptr);
 	//GetCoilData(Coil1.coil_buffer, rdata_size, EEPROM_MEMORY_PAGE);
 	ssd1306_Init();	
-	start_menu ();
-	
-	while (count_delay < START_DELAY) //задержка 1с
-	{
-		if ((key_code = start_scan_key_PEDAL()) == NO_KEY) 
-		{	count_delay++; }
-		else
-		{
-			release_pedal_menu ();
-			while ((key_code = start_scan_key_PEDAL()) != NO_KEY) {}
-		}	
-		HAL_Delay (10);
-	}
-	
+	start_menu ();	
+	init_loop ();	
 	main_menu_select_preset_screen();
   /* USER CODE END 2 */
 
@@ -147,24 +131,8 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
     /* USER CODE BEGIN 3 */
-		if ((key_code = scan_keys()) != NO_KEY)
-		{
-			switch (key_code) //обработка кода нажатой кнопки
-			{	
-				case KEY_PEDAL_LONG:
-					start_drives_turn (drive_mode, preset_ptr[drive_mode-1]);
-					break;
-				
-				case KEY_MODE_LONG:
-					drive_mode = menu_select_preset(&Pos_Enc1, preset_ptr);	
-					break;
-				
-				default:
-					break;	
-			}			
-		}
+		main_loop (&Pos_Enc1,preset_ptr);
   }
   /* USER CODE END 3 */
 }
