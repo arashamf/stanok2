@@ -15,6 +15,7 @@ extern "C" {
 // Prototypes ------------------------------------------------------------------//
 void init_status_flags_drives (void);
 void settings_preset_reset (uint8_t , coil_data_t * );
+void setup_null_position (void);
 int8_t start_drives_turn (uint8_t , coil_data_t * );
 void Counter_PWM_Drive1_Callback (void);
 void Counter_PWM_Drive2_Callback (void);

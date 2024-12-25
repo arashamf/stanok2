@@ -1,4 +1,4 @@
-stanok2/eeprom.o: ..\Core\Src\eeprom.c ..\Core\Inc\eeprom.h \
+stanok2/calc_value.o: ..\Core\Src\calc_value.c ..\Core\Inc\calc_value.h \
   ..\Core\Inc\main.h ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal.h \
   ..\Core\Inc\stm32f1xx_hal_conf.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_rcc.h \
@@ -39,5 +39,4 @@ stanok2/eeprom.o: ..\Core\Src\eeprom.c ..\Core\Inc\eeprom.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_pwr.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_gpio.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h \
-  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h ..\Core\Inc\typedef.h \
-  ..\Core\Inc\typedef.h ..\Core\Inc\usart.h ..\Core\Inc\i2c.h
+  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h ..\Core\Inc\typedef.h

@@ -69,6 +69,7 @@ void MX_TIM5_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 void Drives_PWM_start(PWM_data_t * );
+void Drive1_PWM_start(PWM_data_t * ) ;
 void Drive1_PWM_repeat(PWM_data_t * ) ;
 void Drive1_PWM_stop(void) ;
 

@@ -1,5 +1,5 @@
 
-// Includes ---------------------------------------------------------------------------//
+// Includes -------------------------------------------------------------------------------------------//
 #include "menu.h"
 #include "typedef.h"
 #include "tim.h"
@@ -7,18 +7,18 @@
 #include "drive.h"
 #include "ssd1306.h"
 #include "fonts.h"
-//#include "eeprom.h"
+#include "calc_value.h"
 #include "encoder.h"
 #include "usart.h"
-// Declarations and definitions -------------------------------------------------------//
+// Declarations and definitions ----------------------------------------------------------------------//
 
-// Variables -------------------------------------------------------------------------//
+// Variables -----------------------------------------------------------------------------------------//
 uint8_t count_delay = 0; //количество итераций по 10 мс для задержки запуска основного цикла
 //uint8_t step = 0;
 __IO uint16_t key_code = NO_KEY; //код кнопки
-__IO uint8_t drive_mode = NO_PRESET; //номер пресета
+__IO uint8_t drive_mode = PRESET1; //номер пресета
 
-// Functions -------------------------------------------------------------------------//
+// Functions -----------------------------------------------------------------------------------------//
 void init_loop (void)	
 {
 	while (count_delay < START_DELAY) //задержка 1с
@@ -59,6 +59,13 @@ void main_loop (encoder_data_t * HandleEncData, coil_data_t ** HandleCoilData)
 				}
 				break;
 			
+			case KEY_NULL_LONG:
+				setup_null_screen();
+				while ((key_code = scan_keys()) == NO_KEY)
+				{	setup_null_position ();	}
+				main_menu_select_preset_screen();
+				break;
+		
 			default:
 				break;	
 		}			
@@ -70,21 +77,51 @@ void setup_menu (encoder_data_t * HandleEncData, coil_data_t * HandleCoilData)
 {
 	uint16_t key_code = NO_KEY;	
 	
+	//ввод скорости
+	if(HandleCoilData->drive2_turn_in_minute == 0) 
+	{	HandleCoilData->drive2_turn_in_minute = BASE_TURN_IN_MINUTE; }
+	setup_speed_screen (HandleCoilData->drive2_turn_in_minute);
+	while (1)
+	{
+		if (read_encoder (HandleEncData) == ON) //если данные от энкодера изменилось
+		{
+		//	HandleCoilData->rotation_speed += 5*HandleEncData->delta; //увелечиние/уменьшение множителя скорости в импульсах (шаг изменения - 5)
+			HandleCoilData->drive2_turn_in_minute += 3*HandleEncData->delta;
+			if (HandleCoilData->drive2_turn_in_minute > MAX_VALUE_TURN) //если количество оборотов в минуту превысило максимально допустимое значение
+			{	HandleCoilData->drive2_turn_in_minute = MIN_VALUE_TURN;	}
+			else
+			{
+				if (HandleCoilData->drive2_turn_in_minute <	MIN_VALUE_TURN)
+				{	HandleCoilData->drive2_turn_in_minute = MAX_VALUE_TURN;	}
+			}
+			HandleCoilData->pulse_frequency = calc_rotation_speed(HandleCoilData->drive2_turn_in_minute); //расчёт количества оборотов в минуту
+			setup_speed_screen (HandleCoilData->drive2_turn_in_minute);
+		}	
+		if ((key_code = scan_keys()) != NO_KEY) //если была нажата кнопка
+		{
+			if (key_code ==  KEY_MODE_SHORT) //короткое нажатие кнопки энкодера - переход к вводу количества витков следующей обмотки
+			{				
+				break;
+			}
+		}
+	}	
+	
 	//установка передаточного соотношения
 	if(HandleCoilData->gear_ratio == 0) 
 	{	HandleCoilData->gear_ratio = 100; }	
 	setup_ratio_screen (HandleCoilData->gear_ratio);
+	
 	while (1)
 	{
 		if (read_encoder (HandleEncData) == ON) //если данные от энкодера изменилось
 		{
 			HandleCoilData->gear_ratio += 5*HandleEncData->delta;
-			if (HandleCoilData->gear_ratio > 400)
-			{	HandleCoilData->gear_ratio = 25;	}
+			if (HandleCoilData->gear_ratio > MAX_VALUE_RATIO)
+			{	HandleCoilData->gear_ratio = MIN_VALUE_RATIO;	}
 			else
 			{
-				if (HandleCoilData->gear_ratio < 25)
-				{	HandleCoilData->gear_ratio = 400;	}
+				if (HandleCoilData->gear_ratio < MIN_VALUE_RATIO)
+				{	HandleCoilData->gear_ratio = MAX_VALUE_RATIO;	}
 			}
 			setup_ratio_screen (HandleCoilData->gear_ratio);
 		}	
@@ -96,32 +133,7 @@ void setup_menu (encoder_data_t * HandleEncData, coil_data_t * HandleCoilData)
 			}
 		}
 	}	
-		//ввод скорости
-	if(HandleCoilData->rotation_speed == 0) 
-	{	HandleCoilData->rotation_speed = 100; }
-	setup_speed_screen (HandleCoilData->rotation_speed);
-	while (1)
-	{
-		if (read_encoder (HandleEncData) == ON) //если данные от энкодера изменилось
-		{
-			HandleCoilData->rotation_speed += 5*HandleEncData->delta; //увелечиние/уменьшение множителя скорости (шан изменения - 5)
-			if (HandleCoilData->rotation_speed > 400)
-			{	HandleCoilData->rotation_speed = 25;	}
-			else
-			{
-				if (HandleCoilData->rotation_speed < 25)
-				{	HandleCoilData->rotation_speed = 400;	}
-			}
-			setup_speed_screen (HandleCoilData->rotation_speed);
-		}	
-		if ((key_code = scan_keys()) != NO_KEY) //если была нажата кнопка
-		{
-			if (key_code ==  KEY_MODE_SHORT) //короткое нажатие кнопки энкодера - переход к вводу количества витков следующей обмотки
-			{				
-				break;
-			}
-		}
-	}	
+
 	//установка количества витков обмоток
 	for (uint8_t count = 0; count < MAX_NUMBER_COIL; count++)
 	{
@@ -165,11 +177,11 @@ void setup_menu (encoder_data_t * HandleEncData, coil_data_t * HandleCoilData)
 	return;
 }
 
-//-------------------------------------------------------------------------------------------------------------//
+//-----------------------------------------------------------------------------------------------------//
 uint8_t menu_select_preset (encoder_data_t * HandleEncData, coil_data_t ** HandleBufCoilData)
 {
 	__IO uint16_t key_code = NO_KEY;
-	__IO uint8_t drive_mode = PRESET1;	//указатель на номер пресета
+	//__IO uint8_t drive_mode = PRESET1;	//указатель на номер пресета
 	
 	menu_select_preset_screen (drive_mode);
 	while (1)
@@ -207,7 +219,7 @@ uint8_t menu_select_preset (encoder_data_t * HandleEncData, coil_data_t ** Handl
 }
 
 
-//-------------------------------------------------------------------------------------------------------------//
+//-----------------------------------------------------------------------------------------------------//
 void turn_drive_menu (uint8_t numb_preset, coil_data_t * HandleCoilData, uint8_t numb_coil)
 {
 	default_screen (numb_preset, HandleCoilData->remains_coil[numb_coil], HandleCoilData->set_coil[numb_coil], numb_coil+1);	

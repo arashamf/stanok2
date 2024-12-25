@@ -1,6 +1,5 @@
 --cpu Cortex-M3
 "stanok2\startup_stm32f105xc.o"
-"stanok2\angle_calc.o"
 "stanok2\button.o"
 "stanok2\drive.o"
 "stanok2\eeprom.o"
@@ -14,6 +13,7 @@
 "stanok2\usart.o"
 "stanok2\stm32f1xx_it.o"
 "stanok2\stm32f1xx_hal_msp.o"
+"stanok2\calc_value.o"
 "stanok2\stm32f1xx_hal_gpio_ex.o"
 "stanok2\stm32f1xx_ll_gpio.o"
 "stanok2\stm32f1xx_ll_dma.o"

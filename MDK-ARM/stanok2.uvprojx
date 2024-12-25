@@ -395,11 +395,6 @@
           <GroupName>Application/User/Core</GroupName>
           <Files>
             <File>
-              <FileName>angle_calc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\Src\angle_calc.c</FilePath>
-            </File>
-            <File>
               <FileName>button.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Core\Src\button.c</FilePath>
@@ -514,6 +509,11 @@
               <FileName>stm32f1xx_hal_msp.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/stm32f1xx_hal_msp.c</FilePath>
+            </File>
+            <File>
+              <FileName>calc_value.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\calc_value.c</FilePath>
             </File>
           </Files>
         </Group>

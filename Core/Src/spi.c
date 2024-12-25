@@ -123,7 +123,6 @@ void spi_write_buffer (uint8_t * data, uint16_t data_size)
 void spi_write_buffer_DMA (void)
 {	
 	LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_5);
-//	LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_5, SSD1306_X_SIZE);
 	LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_5, SSD1306_BUFFER_SIZE/4);
 	LL_DMA_ConfigAddresses(DMA1, LL_DMA_CHANNEL_5, (uint32_t)&SSD1306_Buffer[(SSD1306_X_SIZE*count) - 4], 
 	LL_SPI_DMA_GetRegAddr(SPI2), LL_DMA_GetDataTransferDirection(DMA1, LL_DMA_CHANNEL_5));  //Get the data register address used for DMA transfer

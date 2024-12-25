@@ -10,8 +10,10 @@
 #include "eeprom.h"
 
 // Functions --------------------------------------------------------------------------------------//
+static void init_drive1_setting (void);
 static void init_drives_setting (coil_data_t * , uint8_t);
 static void drives_one_full_turn (void);
+static void drive1_full_turn (void);
 
 // Variables --------------------------------------------------------------------------------------//
 __IO float step_unit = ((float)STEP18_IN_SEC/(float)STEP_DIV); //количество секунд в одном микрошаге(1,8гр/100=6480/100=64,8)
@@ -21,16 +23,26 @@ volatile STATUS_FLAG_DRIVE_t status_drives;
 //-----------------------------------------------------------------------------------------------------//
 void init_status_flags_drives (void) 
 {
-	status_drives.direction 			= 	LEFT; //двигатели не активны, сдвиг катушки влево
+	status_drives.direction 			= 	RIGHT; //двигатели не активны, сдвиг катушки влево
 	status_drives.end_turn_drive1 = 	DRIVE_FREE; //двигатель 1 свободен
 	status_drives.end_turn_drive2 = 	DRIVE_FREE; //двигатель 2 свободен
 	status_drives.stop_drives			=		START; //разрешение на запуск двигателей
 }
 
 //-----------------------------------------------------------------------------------------------------//
+static void init_drive1_setting (void)
+{
+//	uint32_t period_drive2 	=	1000000/HandleCoilData->pulse_frequency; //период импульса верхнего (мотающего) двигателя в мкс
+	uint32_t period_drive1 	=	1000000/ 2*PULSE_IN_TURN;			//период импульса нижнего (сдвигающего) двигателя
+	Drives_PWM.Compare_Drive1	=	(period_drive1/2)-1; 	//длительность импульса нижнего (сдвигающего) двигателя 1
+	Drives_PWM.Period_Drive1	=	(period_drive1-1); 	//сохранение периода нижнего (сдвигающего) двигателя 1
+	Drives_PWM.number_cnt_PWM_DR1 = 2*PULSE_IN_TURN; //отсечка для таймера считающего количество импульсов таймера управляющего нижним двигателем
+}
+
+//-----------------------------------------------------------------------------------------------------//
 static void init_drives_setting (coil_data_t * HandleCoilData, uint8_t number)
 {
-	uint32_t period_drive2 		=	(BASE_PERIOD_DR2*100)/HandleCoilData->rotation_speed; //период импульса верхнего (мотающего) двигателя
+	uint32_t period_drive2 		=	1000000/HandleCoilData->pulse_frequency; //период импульса верхнего (мотающего) двигателя в мкс
 	uint32_t period_drive1 		=	(period_drive2*100)/HandleCoilData->gear_ratio;			//период импульса нижнего (сдвигающего) двигателя
 	Drives_PWM.Compare_Drive1	=	(period_drive1/2)-1; 	//длительность импульса нижнего (сдвигающего) двигателя 1
 	Drives_PWM.Period_Drive1	=	(period_drive1-1); 	//сохранение периода нижнего (сдвигающего) двигателя 1
@@ -45,7 +57,7 @@ static void init_drives_setting (coil_data_t * HandleCoilData, uint8_t number)
 	#endif
 }
 
-//----------------------инициализация и запуск вращения полного оборота двигателя----------------------//
+//---------------------инициализация и запуск вращения полного оборота двигателей---------------------//
 static void drives_one_full_turn (void) 
 {
 	DRIVE2_ENABLE(START);		//разрешение включения двигателя 2
@@ -55,6 +67,16 @@ static void drives_one_full_turn (void)
 	delay_us (3);	
 	
 	Drives_PWM_start (&Drives_PWM); //загрузка настроек в таймеры
+}
+
+//-----------------------инициализация и запуск вращения сдвигающего двигателя 1-----------------------//
+static void drive1_full_turn (void) 
+{
+	status_drives.direction = LEFT;
+	DIR_DRIVE1 (status_drives.direction); //направление вращения двигателя 1
+	init_drive1_setting ();
+	delay_us (2);		
+	Drive1_PWM_start (&Drives_PWM); //загрузка настроек в таймеры
 }
 
 //-----------------------------------------------------------------------------------------------------//
@@ -96,16 +118,35 @@ int8_t start_drives_turn (uint8_t numb_preset, coil_data_t * HandleCoilData)
 			if	(scan_button_PEDAL() == OFF) //если педаль была отпущена
 			{	
 				status_drives.stop_drives = STOP; //установка флага остановки двигателей	
-				return (HandleCoilData->set_numb_winding - HandleCoilData->complet_winding);			
+				return (HandleCoilData->set_numb_winding - HandleCoilData->complet_winding); //возврат количества намотанных обмоток			
 			}
 		}
-		HandleCoilData->complet_winding++;
+		HandleCoilData->complet_winding++; //увелечиние на 1 количества намотанных обмоток			
 		while	((status_drives.end_turn_drive2 != DRIVE_FREE) && (status_drives.end_turn_drive1 != DRIVE_FREE)) 
 		{} //ожидание завершения оборотов двигателей
 		status_drives.stop_drives = STOP; //установка флага остановки двигателей		
 		return (HandleCoilData->set_numb_winding - HandleCoilData->complet_winding);	
 	}
 	return -1;
+}
+
+//-----------------------------------------------------------------------------------------------------//
+void setup_null_position (void)
+{
+	init_drive1_setting (); //расчёт настроек двигателей
+//	while (scan_button_PEDAL() == OFF) {}
+		
+	while (scan_button_PEDAL() == ON) //если педаль нажата
+	{
+		if (status_drives.end_turn_drive1 == DRIVE_FREE)
+		{
+			status_drives.end_turn_drive1 = DRIVE_BUSY; //двигатель 1 занят (активен)
+			drive1_full_turn(); //запуск вращения на один полный оборот
+		}
+		while	(status_drives.end_turn_drive1 != DRIVE_FREE){} //ожидание завершения оборотов двигателей
+	//	status_drives.stop_drives = STOP; //установка флага остановки двигателей	
+	}
+	status_drives.stop_drives = STOP; //установка флага остановки двигателей	
 }
 
 //------------------------------------------------------------------------------------------------------//

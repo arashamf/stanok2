@@ -285,6 +285,11 @@ void Drives_PWM_start(PWM_data_t * PWM_data)
 	LL_TIM_SetCounter(TIM_cnt_PWM_DRIVE1, 0); 		//сброс счётного регистра
 	LL_TIM_EnableCounter(TIM_cnt_PWM_DRIVE1); 		//включение таймера	
 	
+	/*LL_TIM_DisableCounter(TIM_cnt_PWM_DRIVE2);
+	LL_TIM_SetAutoReload(TIM_cnt_PWM_DRIVE2, PULSE_IN_TURN);
+	LL_TIM_SetCounter(TIM_cnt_PWM_DRIVE2, 0); 		//сброс счётного регистра
+	LL_TIM_EnableCounter(TIM_cnt_PWM_DRIVE2); 		//включение таймера	*/
+	
 	LL_TIM_DisableCounter(TIM_PWM_Drive1); //выключение таймера, управляющий верхним двигателем (намоточным)
 	LL_TIM_DisableCounter(TIM_PWM_Drive2); //выключение таймера, управляющий нижнем двигателем (сдвигающем)
 	LL_TIM_SetCounter(TIM_PWM_Drive1, 0);
@@ -308,19 +313,39 @@ void Drives_PWM_start(PWM_data_t * PWM_data)
 }
 
 //-----------------------------------------------------------------------------------------------//
+void Drive1_PWM_start(PWM_data_t * PWM_data) 
+{
+	LL_TIM_DisableCounter(TIM_cnt_PWM_DRIVE1);
+	LL_TIM_SetAutoReload(TIM_cnt_PWM_DRIVE1, PWM_data->number_cnt_PWM_DR1);
+	LL_TIM_SetCounter(TIM_cnt_PWM_DRIVE1, 0); 		//сброс счётного регистра
+	LL_TIM_EnableCounter(TIM_cnt_PWM_DRIVE1); 		//включение таймера	
+	
+	LL_TIM_DisableCounter(TIM_PWM_Drive1); //выключение таймера, управляющий нижнем двигателем (сдвигающем)
+	LL_TIM_SetCounter(TIM_PWM_Drive1, 0);
+//	LL_TIM_SetAutoReload(TIM_PWM_Drive1, PWM_data-> Period_Drive1); 	//Set the Autoreload value 
+//	LL_TIM_OC_SetCompareCH2(TIM_PWM_Drive1, PWM_data->Compare_Drive1); //Set compare value for output channel 
+	LL_TIM_SetAutoReload(TIM_PWM_Drive1, 1000000/ 2*PULSE_IN_TURN);
+	LL_TIM_OC_SetCompareCH2(TIM_PWM_Drive1, (1000000/PULSE_IN_TURN));
+	LL_TIM_CC_EnableChannel(TIM_PWM_Drive1,  Drive1_PWM_Channel); //включение канала ШИМ таймера
+	if (TIM_PWM_Drive1 == TIM1)
+	{
+		LL_TIM_EnableAllOutputs(TIM_PWM_Drive1);	//включение таймера  для генерации ШИМ
+	}
+	LL_TIM_EnableCounter(TIM_PWM_Drive1); 		//Enable timer counter
+}
+
+//-----------------------------------------------------------------------------------------------//
 void Drive1_PWM_repeat(PWM_data_t * PWM_data) 
 {
 	LL_TIM_SetCounter(TIM_PWM_Drive1, 0);
-	LL_TIM_EnableCounter(TIM_PWM_Drive1); //включение таймера  для генерации ШИМ
-//	LL_TIM_EnableAllOutputs(TIM_PWM_Drive1);	//включение каналов таймера 
+	LL_TIM_EnableCounter(TIM_PWM_Drive1); //включение таймера  для генерации ШИМ двигателя 1
 }
 
 //-----------------------------------------------------------------------------------------------//
 void Drive1_PWM_stop(void) 
 {
 		LL_TIM_DisableCounter(TIM_PWM_Drive1); //выключение таймера
-	//	LL_TIM_DisableAllOutputs(TIM_PWM_Drive1); //
-		LL_TIM_CC_DisableChannel(TIM_PWM_Drive1, Drive1_PWM_Channel );
+		LL_TIM_CC_DisableChannel(TIM_PWM_Drive1, Drive1_PWM_Channel ); //выключение таймера  для генерации ШИМ двигателя 1
 }
 
 //---------------------------------------------------------------------------------------------//
@@ -337,14 +362,12 @@ void TIM_cnt_PWM_DRIVE1_IRQHandler(void)
 //-----------------------------------------------------------------------------------------------//
 void Drive2_PWM_start(PWM_data_t * PWM_data) 
 {
-	//LL_TIM_ClearFlag_UPDATE (TIM_PWM_Drive2);
 	LL_TIM_DisableCounter(TIM_PWM_Drive2); //выключение таймера
-//	LL_TIM_CC_DisableChannel(TIM_PWM_Drive2, Drive2_PWM_Channel);
 	LL_TIM_SetCounter(TIM_PWM_Drive2, 0);
 	LL_TIM_SetAutoReload(TIM_PWM_Drive2, PWM_data->Period_Drive2); //Set the Autoreload value
 	LL_TIM_OC_SetCompareCH1(TIM_PWM_Drive2, PWM_data->Compare_Drive2); //Set compare value for output channel 1 (TIMx_CCR2)
-	LL_TIM_CC_EnableChannel(TIM_PWM_Drive2,  Drive2_PWM_Channel ); //включение канала 1 таймера
-  LL_TIM_EnableAllOutputs(TIM_PWM_Drive2);	//включение таймера  для генерации ШИМ
+	LL_TIM_CC_EnableChannel(TIM_PWM_Drive2, Drive2_PWM_Channel); //включение канала 1 таймера
+  LL_TIM_EnableAllOutputs(TIM_PWM_Drive2);	//включение таймера для генерации ШИМ
 	LL_TIM_EnableCounter(TIM_PWM_Drive2); //Enable timer counter
 }
 

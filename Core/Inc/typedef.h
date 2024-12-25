@@ -14,13 +14,19 @@ extern "C" {
 #define 	I2C_REQUEST_READ                        0x01
 #define 	SLAVE_OWN_ADDRESS                       0xA0 //адресс EEPROM микросхемы
 
-#define   REDUCER 						40 			//делитель редуктора
 #define 	PULSE_IN_TURN				1600 		//количество микрошагов в одном полном обороте (360 гр) с учётом делителя драйвера
 #define 	PULSE_IN_TIM_RCR		100
 #define 	STEP_IN_TURN				200		 //количество шагов (1,8гр) в одном полном обороте (360 гр)
 #define 	STEP_DIV 						(PULSE_IN_TURN/STEP_IN_TURN)		//количество микрошагов (8) в одном шаге двигателя (1,8гр)
-#define 	STEP_TURNOVER				(PULSE_IN_TURN*REDUCER) //количество микрошагов в одном полном обороте (360 гр) с учётом делителя драйвера и редуктора 
-#define 	BASE_PERIOD_DR2			1000
+
+#define 	BASE_TURN_IN_MINUTE			30
+#define   STEP_TURN_IN_MINUTE			3
+#define 	MAX_VALUE_TURN 					150
+#define 	MIN_VALUE_TURN 					12
+#define 	BASE_PULSE_DR2					(PULSE_IN_TURN*BASE_TURN_IN_MINUTE)/60 	//800 ГЦ
+
+#define 	MAX_VALUE_RATIO				400 
+#define 	MIN_VALUE_RATIO				25 
 
 #define 	STEP18_IN_SEC					6480 							//количество секунд в одном шаге двигателя (1,8гр)
 #define 	CIRCLE_IN_SEC					(STEP18_IN_SEC*CIRCLE_IN_STEP)	//количество секунд в одном полном обороте двигателя (360 гр)
@@ -50,9 +56,9 @@ extern "C" {
 //----------------------------------------------------------------------------------//
 typedef struct 
 {
-	int16_t 	prevCounter_SetClick; 			//сохранённое показание энкодера
-	int16_t 	currCounter_SetClick; 			//текущее показание энкодера
-	int16_t delta;
+	int32_t 	prevCounter_SetClick; 			//сохранённое показание энкодера
+	int32_t 	currCounter_SetClick; 			//текущее показание энкодера
+	int32_t delta;
 } encoder_data_t;
 
 //----------------------------------------------------------------------------------//
@@ -65,7 +71,8 @@ typedef struct
 		{
 			uint8_t 	set_numb_winding; //установленное количество обмоток
 			uint8_t 	complet_winding; //оставшееся количество обмоток
-			uint16_t	rotation_speed; //коэффициент скорости
+			uint16_t	pulse_frequency; //количество импульсов в секунду
+			uint16_t  drive2_turn_in_minute; //количество оборотов в минуту
 			uint16_t 	gear_ratio; //передаточное соотношение
 			uint16_t 	set_coil[MAX_NUMBER_COIL]; //установленное количество витков обмотки
 			uint16_t 	remains_coil[MAX_NUMBER_COIL]; //оставшееся количество витков обмотки		

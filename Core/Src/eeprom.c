@@ -1,7 +1,6 @@
 
 // Includes --------------------------------------------------------------------//
 #include "eeprom.h"
-#include "angle_calc.h"
 #include "typedef.h"
 #include "usart.h"
 #include "i2c.h"

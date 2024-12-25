@@ -558,11 +558,9 @@ void setup_ratio_screen (int16_t gear_ratio)
 //-------------------------------ф-я отображения установленной скорости-------------------------------//
 void setup_speed_screen (int16_t rotation_speed)
 {
-	uint8_t int_number = rotation_speed/100;
-	uint8_t fraction_part = rotation_speed%100;
 	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE+5);
 	SSD1306_Clear_Screen ();
-	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "SP:%u.%02u", int_number, fraction_part);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "%3u RPM", rotation_speed);
 	SSD1306_Puts (LCD_buff , &Font_16x26, SSD1306_COLOR_WHITE);
 	SSD1306_UpdateScreen();
 }
@@ -590,6 +588,22 @@ void main_menu_select_preset_screen (void)
 	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE+60, LCD_DEFAULT_Y_SIZE+16);
 	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "PRESET");
 	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);
+	SSD1306_UpdateScreen();	
+}
+
+//-----------------------------------------------------------------------------------------------//
+void setup_null_screen (void)
+{
+	clear_buffer_screen ();
+	
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "SETUP");
+	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);
+	
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE+10, LCD_DEFAULT_Y_SIZE+16);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "NULL_POSITION");
+	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);	
+
 	SSD1306_UpdateScreen();	
 }
 
@@ -648,29 +662,26 @@ static void preset4_screen (void)
 //-----------------------------------------------------------------------------------------------//
 void menu_select_preset_screen (uint8_t screen_mode)
 {
+	clear_buffer_screen ();
 	switch (screen_mode)
-	{	
-		case 1:
-			clear_buffer_screen ();
+	{
 			preset1_screen();
 			break;
 				
-		case 2:
-			clear_buffer_screen ();
+		case PRESET2:
 			preset2_screen();
 			break;
 				
-		case 3:
-			clear_buffer_screen ();
+		case PRESET3:
 			preset3_screen();
 			break;
 				
-		case 4:
-			clear_buffer_screen ();
+		case PRESET4:			
 			preset4_screen();
 			break;
 				
 		default:
+			preset1_screen();
 			break;	
 	}	
 }
