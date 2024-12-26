@@ -592,16 +592,28 @@ void main_menu_select_preset_screen (void)
 }
 
 //-----------------------------------------------------------------------------------------------//
-void setup_null_screen (void)
+void mode_setup_null_screen (void)
 {
 	clear_buffer_screen ();
 	
 	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
-	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "SETUP");
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "SETUP NULL");
+	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);
+
+	SSD1306_UpdateScreen();	
+}
+
+//-----------------------------------------------------------------------------------------------//
+void mode_setup_null_dir_screen (void)
+{
+	clear_buffer_screen ();
+	
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "SETUP NULL");
 	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);
 	
-	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE+10, LCD_DEFAULT_Y_SIZE+16);
-	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "NULL_POSITION");
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE+16);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "<-SET DIR->");
 	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);	
 
 	SSD1306_UpdateScreen();	

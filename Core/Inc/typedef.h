@@ -45,6 +45,7 @@ extern "C" {
 #define 	DISP_NOT_CLEAR 						0
 #define 	DRIVE_FREE								1
 #define 	DRIVE_BUSY								0
+#define 	ERROR											-1
 //#define 	EEPROM_NUMBER_BYTES 		4
 #define 	CPU_CLOCK_VALUE						(72000000UL)		//частота контроллера 
 #define 	MS_PER_SECOND							1000 

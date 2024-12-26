@@ -43,7 +43,7 @@ void main_loop (encoder_data_t * HandleEncData, coil_data_t ** HandleCoilData)
 		switch (key_code) //обработка кода нажатой кнопки
 		{	
 			case KEY_PEDAL_LONG:
-				status_drives.stop_drives = START; //разрешение на запуск двигателей
+			//	status_drives.stop_drives = START; //разрешение на запуск двигателей
 				start_drives_turn (drive_mode, *(HandleCoilData + (drive_mode-1))); //выпонение пресета
 				while (scan_button_PEDAL() != OFF) {}//ожидание отключения педали
 				break;
@@ -60,10 +60,11 @@ void main_loop (encoder_data_t * HandleEncData, coil_data_t ** HandleCoilData)
 				break;
 			
 			case KEY_NULL_LONG:
-				setup_null_screen();
-				while ((key_code = scan_keys()) == NO_KEY)
-				{	setup_null_position ();	}
-				main_menu_select_preset_screen();
+				mode_setup_null_dir_screen(); //вывод заставки режима установки в "нулевую" позицию сдвигающего двигателя на дисплей
+				while (select_direction() == ERROR) {} 
+				mode_setup_null_screen ();
+				setup_null_position ();	//ф-я установки в "нулевую" позицию сдвигающего двигателя
+				main_menu_select_preset_screen(); //вывод заставки режима выбора пресета
 				break;
 		
 			default:

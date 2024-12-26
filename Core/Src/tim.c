@@ -316,16 +316,11 @@ void Drives_PWM_start(PWM_data_t * PWM_data)
 void Drive1_PWM_start(PWM_data_t * PWM_data) 
 {
 	LL_TIM_DisableCounter(TIM_cnt_PWM_DRIVE1);
-	LL_TIM_SetAutoReload(TIM_cnt_PWM_DRIVE1, PWM_data->number_cnt_PWM_DR1);
-	LL_TIM_SetCounter(TIM_cnt_PWM_DRIVE1, 0); 		//сброс счЄтного регистра
-	LL_TIM_EnableCounter(TIM_cnt_PWM_DRIVE1); 		//включение таймера	
 	
 	LL_TIM_DisableCounter(TIM_PWM_Drive1); //выключение таймера, управл€ющий нижнем двигателем (сдвигающем)
 	LL_TIM_SetCounter(TIM_PWM_Drive1, 0);
-//	LL_TIM_SetAutoReload(TIM_PWM_Drive1, PWM_data-> Period_Drive1); 	//Set the Autoreload value 
-//	LL_TIM_OC_SetCompareCH2(TIM_PWM_Drive1, PWM_data->Compare_Drive1); //Set compare value for output channel 
-	LL_TIM_SetAutoReload(TIM_PWM_Drive1, 1000000/ 2*PULSE_IN_TURN);
-	LL_TIM_OC_SetCompareCH2(TIM_PWM_Drive1, (1000000/PULSE_IN_TURN));
+	LL_TIM_SetAutoReload(TIM_PWM_Drive1, 1000000/PULSE_IN_TURN);
+	LL_TIM_OC_SetCompareCH2(TIM_PWM_Drive1, (1000000/PULSE_IN_TURN/2));
 	LL_TIM_CC_EnableChannel(TIM_PWM_Drive1,  Drive1_PWM_Channel); //включение канала Ў»ћ таймера
 	if (TIM_PWM_Drive1 == TIM1)
 	{
