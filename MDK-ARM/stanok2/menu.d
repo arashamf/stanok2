@@ -43,4 +43,5 @@ stanok2/menu.o: ..\display\menu.c ..\display\menu.h ..\Core\Inc\main.h \
   ..\Core\Inc\main.h ..\display\fonts.h ..\Core\Inc\tim.h \
   ..\Core\Inc\typedef.h ..\Core\Inc\button.h ..\Core\Inc\drive.h \
   ..\display\ssd1306.h ..\display\ssd1306_interface.h \
-  ..\Core\Inc\calc_value.h ..\Core\Inc\encoder.h ..\Core\Inc\usart.h
+  ..\Core\Inc\calc_value.h ..\Core\Inc\encoder.h ..\Core\Inc\usart.h \
+  ..\Core\Inc\gpio.h

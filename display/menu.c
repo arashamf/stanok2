@@ -10,11 +10,12 @@
 #include "calc_value.h"
 #include "encoder.h"
 #include "usart.h"
+#include "gpio.h"
+
 // Declarations and definitions ----------------------------------------------------------------------//
 
 // Variables -----------------------------------------------------------------------------------------//
 uint8_t count_delay = 0; //количество итераций по 10 мс для задержки запуска основного цикла
-//uint8_t step = 0;
 __IO uint16_t key_code = NO_KEY; //код кнопки
 __IO uint8_t drive_mode = PRESET1; //номер пресета
 
@@ -43,7 +44,6 @@ void main_loop (encoder_data_t * HandleEncData, coil_data_t ** HandleCoilData)
 		switch (key_code) //обработка кода нажатой кнопки
 		{	
 			case KEY_PEDAL_LONG:
-			//	status_drives.stop_drives = START; //разрешение на запуск двигателей
 				start_drives_turn (drive_mode, *(HandleCoilData + (drive_mode-1))); //выпонение пресета
 				while (scan_button_PEDAL() != OFF) {}//ожидание отключения педали
 				break;
@@ -61,8 +61,8 @@ void main_loop (encoder_data_t * HandleEncData, coil_data_t ** HandleCoilData)
 			
 			case KEY_NULL_LONG:
 				mode_setup_null_dir_screen(); //вывод заставки режима установки в "нулевую" позицию сдвигающего двигателя на дисплей
-				while (select_direction() == ERROR) {} 
-				mode_setup_null_screen ();
+				while (select_direction() == ERROR) {} //ожидания нажатия кнопки выбора направления сдвигающего двигателя
+				mode_setup_null_screen (); //вывод заставки режима установки в "нулевую" позицию
 				setup_null_position ();	//ф-я установки в "нулевую" позицию сдвигающего двигателя
 				main_menu_select_preset_screen(); //вывод заставки режима выбора пресета
 				break;
@@ -81,6 +81,8 @@ void setup_menu (encoder_data_t * HandleEncData, coil_data_t * HandleCoilData)
 	//ввод скорости
 	if(HandleCoilData->drive2_turn_in_minute == 0) 
 	{	HandleCoilData->drive2_turn_in_minute = BASE_TURN_IN_MINUTE; }
+	
+	Stop_Count_Timers(); //остановка счётных таймеров
 	setup_speed_screen (HandleCoilData->drive2_turn_in_minute);
 	while (1)
 	{
@@ -96,12 +98,16 @@ void setup_menu (encoder_data_t * HandleEncData, coil_data_t * HandleCoilData)
 				{	HandleCoilData->drive2_turn_in_minute = MAX_VALUE_TURN;	}
 			}
 			HandleCoilData->pulse_frequency = calc_rotation_speed(HandleCoilData->drive2_turn_in_minute); //расчёт количества оборотов в минуту
+			drive2_turn (HandleCoilData);	//запуск вращающего двигателя
 			setup_speed_screen (HandleCoilData->drive2_turn_in_minute);
 		}	
 		if ((key_code = scan_keys()) != NO_KEY) //если была нажата кнопка
 		{
 			if (key_code ==  KEY_MODE_SHORT) //короткое нажатие кнопки энкодера - переход к вводу количества витков следующей обмотки
-			{				
+			{	
+				SoftStop_Drives() ;
+				HardStop_Drives () ;
+				status_drives.end_turn_drive2 = DRIVE_FREE;
 				break;
 			}
 		}
@@ -124,12 +130,17 @@ void setup_menu (encoder_data_t * HandleEncData, coil_data_t * HandleCoilData)
 				if (HandleCoilData->gear_ratio < MIN_VALUE_RATIO)
 				{	HandleCoilData->gear_ratio = MAX_VALUE_RATIO;	}
 			}
+			drive1_turn (HandleCoilData);	//запуск сдвигающего двигателя
+			drive2_turn (HandleCoilData);	//запуск вращающего двигателя
 			setup_ratio_screen (HandleCoilData->gear_ratio);
 		}	
 		if ((key_code = scan_keys()) != NO_KEY) //если была нажата кнопка
 		{
 			if (key_code == KEY_MODE_SHORT) //короткое нажатие кнопки энкодера - переход к вводу количества витков следующей обмотки
-			{				
+			{	
+				SoftStop_Drives() ;
+				HardStop_Drives () ;
+				status_drives.end_turn_drive1 = DRIVE_FREE;				
 				break;
 			}
 		}

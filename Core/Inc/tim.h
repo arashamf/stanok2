@@ -70,12 +70,14 @@ void MX_TIM5_Init(void);
 /* USER CODE BEGIN Prototypes */
 void Drives_PWM_start(PWM_data_t * );
 void Drive1_PWM_start(PWM_data_t * ) ;
-void Drive1_PWM_repeat(PWM_data_t * ) ;
+void Drive1_PWM_repeat(void);
 void Drive1_PWM_stop(void) ;
 
 void Drive2_PWM_start (PWM_data_t * );
-void Drive2_PWM_repeat(PWM_data_t * ) ;
+void Drive2_PWM_repeat(void);
 void Drive2_PWM_stop(void);
+
+void Stop_Count_Timers(void);
 
 void delay_us(uint16_t );
 void repeat_time (uint16_t );

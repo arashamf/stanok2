@@ -25,7 +25,7 @@ extern "C" {
 #define 	MIN_VALUE_TURN 					12
 #define 	BASE_PULSE_DR2					(PULSE_IN_TURN*BASE_TURN_IN_MINUTE)/60 	//800 ГЦ
 
-#define 	MAX_VALUE_RATIO				400 
+#define 	MAX_VALUE_RATIO				300 
 #define 	MIN_VALUE_RATIO				25 
 
 #define 	STEP18_IN_SEC					6480 							//количество секунд в одном шаге двигателя (1,8гр)
@@ -91,8 +91,7 @@ typedef union
 		uint8_t direction							: 1;
 		uint8_t end_turn_drive1				: 1;
 		uint8_t end_turn_drive2				: 1;
-		uint8_t stop_drives						:	1;
-		uint8_t reserve								:	4;
+		uint8_t reserve								:	5;
 	};
 	uint8_t flag;
 }STATUS_FLAG_DRIVE_t;
