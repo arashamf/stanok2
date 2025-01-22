@@ -32,8 +32,8 @@ uint16_t start_scan_key_PEDAL (void)
 		{
 			key_state =  	KEY_STATE_BOUNCE; //переход на следующую стадию - режим ожидания окончания дребезга
 			key_code 	= 	KEY_PEDAL_SHORT;
+			repeat_time (KEY_BOUNCE_TIME); //запуск ожидания окончания дребезга
 		}
-		repeat_time (KEY_BOUNCE_TIME); //запуск ожидания окончания дребезга
 	}
 	
 	if (key_state ==  KEY_STATE_BOUNCE)  //режим ожидания окончания дребезга

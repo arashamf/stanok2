@@ -140,7 +140,8 @@ void setup_menu (encoder_data_t * HandleEncData, coil_data_t * HandleCoilData)
 			{	
 				SoftStop_Drives() ;
 				HardStop_Drives () ;
-				status_drives.end_turn_drive1 = DRIVE_FREE;				
+				status_drives.end_turn_drive1 = DRIVE_FREE;		
+				status_drives.end_turn_drive2 = DRIVE_FREE;
 				break;
 			}
 		}
