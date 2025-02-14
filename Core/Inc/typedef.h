@@ -19,16 +19,19 @@ extern "C" {
 #define 	STEP_IN_TURN				200		 //количество шагов (1,8гр) в одном полном обороте (360 гр)
 #define 	STEP_DIV 						(PULSE_IN_TURN/STEP_IN_TURN)		//количество микрошагов (8) в одном шаге двигателя (1,8гр)
 
-#define 	BASE_TURN_IN_MINUTE			30
-#define   STEP_TURN_IN_MINUTE			3
-#define 	MAX_VALUE_TURN 					150
-#define 	MIN_VALUE_TURN 					12
+#define 	BASE_TURN_IN_MINUTE			30 		//начальное количество оборотов в минуту
+#define   STEP_TURN_IN_MINUTE			3 		//шаг приращение частоты вращения
+#define 	MAX_VALUE_TURN 					150  	//максимальное количество оборотов в минуту
+#define 	MIN_VALUE_TURN 					12 		//минимальное количество оборотов в минуту
 #define 	BASE_PULSE_DR2					(PULSE_IN_TURN*BASE_TURN_IN_MINUTE)/60 	//800 ГЦ
 
 #define 	MAX_VALUE_RATIO				300 
 #define 	MIN_VALUE_RATIO				25 
 
-#define 	STEP18_IN_SEC					6480 							//количество секунд в одном шаге двигателя (1,8гр)
+#define 	MAX_VALUE_COIL				250 
+#define 	MIN_VALUE_COIL				1 
+#define 	DEFAULT_GEAR_RATIO		100
+#define 	STEP18_IN_SEC					6480 		//количество секунд в одном шаге двигателя (1,8гр)
 #define 	CIRCLE_IN_SEC					(STEP18_IN_SEC*CIRCLE_IN_STEP)	//количество секунд в одном полном обороте двигателя (360 гр)
 #define 	SECOND_PER_MINUTE 		60
 #define 	SECOND_PER_DEGREE 		3600
@@ -54,7 +57,6 @@ extern "C" {
 #define 	MAX_PRESET 								4
 
 // Exported types ------------------------------------------------------------------//
-//----------------------------------------------------------------------------------//
 typedef struct 
 {
 	int32_t 	prevCounter_SetClick; 			//сохранённое показание энкодера
@@ -112,13 +114,15 @@ typedef struct
 //код нажатой кнопки----------------------------------------------------------------//
 typedef enum 
 {
-	NO_KEY 						= 	0x00,			//кнопка не нажата	
-	KEY_PEDAL_SHORT 	= 	0x01,			//короткое нажатие центральной кнопки
-	KEY_PEDAL_LONG 		= 	0x02,			//длинное нажатие центральной кнопки
-	KEY_NULL_SHORT		= 	0x03,			//короткое нажатие кнопки энкодера
-	KEY_NULL_LONG			=		0x04,			//длинное нажатие кнопки энкодера
-	KEY_MODE_SHORT		=		0x05,			//короткое нажатие выбора режима
-	KEY_MODE_LONG			=		0x06,			//короткое нажатие выбора режима
+	NO_KEY 						= 	0x00,		//кнопка не нажата	
+	KEY_PEDAL_SHORT 	= 	0x01,		//короткое нажатие педали
+	KEY_PEDAL_LONG 		= 	0x02,		//длинное нажатие педали
+	KEY_NULL_SHORT		= 	0x03,		//короткое нажатие кнопки выбора режима установки нулевой позиции
+	KEY_NULL_LONG			=		0x04,		//длинное нажатие кнопки выбора режима установки нулевой позиции
+	KEY_SETUP_SHORT		=		0x05,		//короткое нажатие выбора режима установки настройки обмоток катушки
+	KEY_SETUP_LONG		=		0x06,		//длинное нажатие выбора режима установки настройки обмоток катушки
+	KEY_MANUAL_SHORT	=	 	0x07,		//короткое нажатие выбора режима ручной установки сдвигающего двигателя
+	KEY_MANUAL_LONG		=		0x08,		//длинное нажатие выбора режима ручной установки сдвигающего двигателя
 } KEY_CODE_t; 					
 
 //-----------------------------------------------------------------------------------//

@@ -1,4 +1,4 @@
-stanok2/main.o: ..\Core\Src\main.c ..\Core\Inc\main.h \
+stanok2/iwdg.o: ..\Core\Src\iwdg.c ..\Core\Inc\iwdg.h ..\Core\Inc\main.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal.h \
   ..\Core\Inc\stm32f1xx_hal_conf.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_rcc.h \
@@ -39,10 +39,5 @@ stanok2/main.o: ..\Core\Src\main.c ..\Core\Inc\main.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_pwr.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_gpio.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h \
-  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h ..\Core\Inc\dma.h \
-  ..\Core\Inc\main.h ..\Core\Inc\i2c.h ..\Core\Inc\spi.h \
-  ..\Core\Inc\tim.h ..\Core\Inc\typedef.h ..\Core\Inc\usart.h \
-  ..\Core\Inc\gpio.h ..\display\menu.h ..\Core\Inc\typedef.h \
-  ..\display\fonts.h ..\display\ssd1306.h ..\display\ssd1306_interface.h \
-  ..\Core\Inc\drive.h ..\Core\Inc\button.h ..\Core\Inc\eeprom.h \
-  ..\Core\Inc\iwdg.h
+  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h \
+  ..\Drivers\stm32f1xx_ll_iwdg.h

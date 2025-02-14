@@ -33,6 +33,7 @@
 #include "drive.h"
 #include "button.h"
 #include "eeprom.h"
+#include "iwdg.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -119,7 +120,6 @@ int main(void)
 	
 	timers_ini ();
 	init_preset_struct (preset_ptr);
-	//GetCoilData(Coil1.coil_buffer, rdata_size, EEPROM_MEMORY_PAGE);
 	ssd1306_Init();	
 	start_menu ();	
 	init_loop ();	
@@ -131,6 +131,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+
     /* USER CODE BEGIN 3 */
 		main_loop (&Pos_Enc1,preset_ptr);
   }

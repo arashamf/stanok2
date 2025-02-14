@@ -61,14 +61,14 @@ void MX_GPIO_Init(void)
   LL_GPIO_ResetOutputPin(GPIOA, ENABLE1_Pin|DIR1_Pin|ENABLE2A15_Pin);
 
   /**/
-  GPIO_InitStruct.Pin = MODE_BTN_Pin|LEFT_BTN_Pin|CENTER_BTN_Pin|RIGHT_BTN_Pin;
+  GPIO_InitStruct.Pin = PEDAL_Pin|ENC_BTN_Pin|LEFT_BTN_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_FLOATING;
   LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /**/
-  GPIO_InitStruct.Pin = ENC1_BTN_Pin;
+  GPIO_InitStruct.Pin = RIGHT_BTN_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_FLOATING;
-  LL_GPIO_Init(ENC1_BTN_GPIO_Port, &GPIO_InitStruct);
+  LL_GPIO_Init(RIGHT_BTN_GPIO_Port, &GPIO_InitStruct);
 
   /**/
   GPIO_InitStruct.Pin = RST_Pin|DC_Pin|CS_Pin;

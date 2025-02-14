@@ -72,20 +72,18 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define MODE_BTN_Pin LL_GPIO_PIN_0
-#define MODE_BTN_GPIO_Port GPIOC
-#define LEFT_BTN_Pin LL_GPIO_PIN_1
+#define PEDAL_Pin LL_GPIO_PIN_0
+#define PEDAL_GPIO_Port GPIOC
+#define ENC_BTN_Pin LL_GPIO_PIN_1
+#define ENC_BTN_GPIO_Port GPIOC
+#define LEFT_BTN_Pin LL_GPIO_PIN_2
 #define LEFT_BTN_GPIO_Port GPIOC
-#define CENTER_BTN_Pin LL_GPIO_PIN_2
-#define CENTER_BTN_GPIO_Port GPIOC
-#define RIGHT_BTN_Pin LL_GPIO_PIN_3
-#define RIGHT_BTN_GPIO_Port GPIOC
 #define ENC_IN2_Pin LL_GPIO_PIN_0
 #define ENC_IN2_GPIO_Port GPIOA
 #define ENC_IN1_Pin LL_GPIO_PIN_1
 #define ENC_IN1_GPIO_Port GPIOA
-#define ENC1_BTN_Pin LL_GPIO_PIN_2
-#define ENC1_BTN_GPIO_Port GPIOA
+#define RIGHT_BTN_Pin LL_GPIO_PIN_2
+#define RIGHT_BTN_GPIO_Port GPIOA
 #define PUL_DIR1_Pin LL_GPIO_PIN_7
 #define PUL_DIR1_GPIO_Port GPIOA
 #define RST_Pin LL_GPIO_PIN_0
@@ -123,7 +121,7 @@ void Error_Handler(void);
 /* USER CODE BEGIN Private defines */
 //#define __USE_DBG
 #define __SPI_DMA_MODE
-
+//#define __USE_IWDG
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

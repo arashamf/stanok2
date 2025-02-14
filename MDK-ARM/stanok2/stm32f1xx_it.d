@@ -41,4 +41,4 @@ stanok2/stm32f1xx_it.o: ..\Core\Src\stm32f1xx_it.c ..\Core\Inc\main.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h \
   ..\Core\Inc\stm32f1xx_it.h ..\Core\Inc\spi.h ..\Core\Inc\main.h \
-  ..\Core\Inc\drive.h ..\Core\Inc\typedef.h
+  ..\Core\Inc\drive.h ..\Core\Inc\typedef.h ..\Core\Inc\gpio.h

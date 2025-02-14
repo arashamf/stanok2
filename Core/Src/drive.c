@@ -51,7 +51,7 @@ static void init_drives_setting (coil_data_t * HandleCoilData, uint8_t number)
 	init_drive2_setting (HandleCoilData);
 	init_drive1_setting (HandleCoilData);
 	Drives_PWM.turn_number 		= (HandleCoilData->remains_coil[number]); //сохранение количества полных оборотов 
-	Drives_PWM.number_cnt_PWM_DR1 = (PULSE_IN_TURN*HandleCoilData->gear_ratio)/100; //отсечка для таймера считающего количество импульсов таймера управляющего нижним двигателем
+	Drives_PWM.number_cnt_PWM_DR1 = (PULSE_IN_TURN*HandleCoilData->gear_ratio)/100; //отсечка для таймера считающего количество импульсов мотающего двигателя
 	
 	#ifdef __USE_DBG
 		sprintf (DBG_buffer,  "ratio=%u,Period=%u,Compare=%u\r\n", HandleCoilData->gear_ratio, Drives_PWM.Period_Drive1, Drives_PWM.Compare_Drive1);
@@ -171,14 +171,14 @@ int8_t select_direction(void)
 	while ((key_code = scan_keys()) == NO_KEY) {} //ожидание нажатия кнопки
 	switch (key_code) //обработка кода нажатой кнопки
 	{	
-			case KEY_MODE_SHORT:
-			case KEY_MODE_LONG:
-				status_drives.direction = LEFT;
+			case KEY_MANUAL_SHORT:
+			case KEY_MANUAL_LONG:
+				status_drives.direction = RIGHT;
 				break;
 			
 			case KEY_NULL_SHORT:
 			case KEY_NULL_LONG:
-				status_drives.direction = RIGHT;
+				status_drives.direction = LEFT;
 				break;
 			
 			default:
@@ -188,25 +188,45 @@ int8_t select_direction(void)
 	return status_drives.direction;
 }
 
-
 //-----------------------------------------------------------------------------------------------------//
 void setup_null_position (void)
 {	
 	Stop_Count_Timers();
 	preset_null_pos.pulse_frequency = 2*PULSE_IN_TURN;
-	preset_null_pos.gear_ratio = 100;	
+	preset_null_pos.gear_ratio = DEFAULT_GEAR_RATIO;	
+	
+	if (status_drives.end_turn_drive1 == DRIVE_FREE)
+	{
+		status_drives.direction = LEFT;
+		init_drive2_setting (&preset_null_pos);
+		status_drives.end_turn_drive1 = DRIVE_BUSY; //статус флага двигателя 1 - занят 
+		drive1_turn(&preset_null_pos); //запуск вращения 
+		while (status_drives.direction != RIGHT){} //сдвиг до правого датчика
+		while ((LL_GPIO_IsInputPinSet(RIGHT_IN_GPIO_Port, RIGHT_IN_Pin)) == ON){}
+		Drive1_PWM_stop(); //остановка генерации ШИМа
+		DRIVE1_ENABLE(STOP); //запрет запуска двигателя 1
+		status_drives.end_turn_drive1 = DRIVE_FREE; //статус флаг двигателя 1 - свободен		
+	}
+}
+
+//-----------------------------------------------------------------------------------------------------//
+void manual_control_drive1 (void)
+{	
+	uint16_t key_code = NO_KEY;
+	Stop_Count_Timers();
+	preset_null_pos.pulse_frequency = 2*PULSE_IN_TURN;
+	preset_null_pos.gear_ratio = DEFAULT_GEAR_RATIO;	
 	
 	while (scan_button_PEDAL() != ON)  //ожидание нажатия педали
 	{
 		if ((scan_keys()) != NO_KEY)
 		{	return;	}	
 	} 
-	while ((scan_keys()) == NO_KEY) //пока не нажата никакая кнопка
+	while (((key_code = scan_keys()) == NO_KEY) || (key_code == KEY_PEDAL_SHORT) || (key_code == KEY_PEDAL_LONG))//пока не нажата никакая кнопка
 	{
 		if (status_drives.end_turn_drive1 == DRIVE_FREE) //проверка флага двигателя 1
 		{
-
-			init_drive2_setting (&preset_null_pos);
+			init_drive2_setting (&preset_null_pos); //необходимо получить значение Period_Drive2
 			status_drives.end_turn_drive1 = DRIVE_BUSY; //статус флага двигателя 1 - занят 
 			drive1_turn(&preset_null_pos); //запуск вращения на один полный оборот
 			while (scan_button_PEDAL() == ON){} //ожидание отпускания педали
@@ -249,7 +269,7 @@ void Counter_PWM_Drive2_Callback (void)
 void Left_Sensor_Callback (void)
 {
 	DRIVE1_ENABLE(STOP);  //выключение двигателя 1
-	status_drives.direction = (RIGHT); //левый датчик меняет направление намотки направо
+	status_drives.direction = RIGHT; //левый датчик меняет направление намотки направо
 	DIR_DRIVE1 (status_drives.direction);
 	DRIVE1_ENABLE(START);  //включение двигателя 1
 }

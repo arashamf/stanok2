@@ -16,6 +16,7 @@ extern "C" {
 void init_status_flags_drives (void);
 void settings_preset_reset (uint8_t , coil_data_t * );
 int8_t select_direction(void);
+void manual_control_drive1 (void);
 void setup_null_position (void);
 int8_t start_drives_turn (uint8_t , coil_data_t * );
 void drive1_turn (coil_data_t * );

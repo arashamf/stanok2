@@ -586,30 +586,42 @@ void main_menu_select_preset_screen (void)
 	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);
 	
 	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE+60, LCD_DEFAULT_Y_SIZE+16);
-	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "PRESET");
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "MODE");
 	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);
 	SSD1306_UpdateScreen();	
 }
 
 //-----------------------------------------------------------------------------------------------//
-void mode_setup_null_screen (void)
+void mode_setup_null_screen(void)
 {
 	clear_buffer_screen ();
 	
 	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
-	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "SETUP NULL");
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "SET NULL");
 	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);
 
 	SSD1306_UpdateScreen();	
 }
 
 //-----------------------------------------------------------------------------------------------//
-void mode_setup_null_dir_screen (void)
+void mode_setup_manual_screen (void)
 {
 	clear_buffer_screen ();
 	
 	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
-	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "SETUP NULL");
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "MANUAL MODE");
+	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);
+
+	SSD1306_UpdateScreen();	
+}
+
+//-----------------------------------------------------------------------------------------------//
+void mode_setup_manual_dir_screen (void)
+{
+	clear_buffer_screen ();
+	
+	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE);
+	snprintf ((char *)LCD_buff, LCD_BUFFER_SIZE, "MANUAL MODE");
 	SSD1306_Puts (LCD_buff , &Font_11x17, SSD1306_COLOR_WHITE);
 	
 	SSD1306_GotoXY(LCD_DEFAULT_X_SIZE, LCD_DEFAULT_Y_SIZE+16);

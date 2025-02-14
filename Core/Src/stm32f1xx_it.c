@@ -24,6 +24,7 @@
 /* USER CODE BEGIN Includes */
 #include "spi.h"
 #include "drive.h"
+#include "gpio.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -206,7 +207,7 @@ void SysTick_Handler(void)
 void EXTI2_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI2_IRQn 0 */
-
+	
   /* USER CODE END EXTI2_IRQn 0 */
   if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_2) != RESET)
   {
@@ -248,7 +249,7 @@ void DMA1_Channel5_IRQHandler(void)
 void EXTI15_10_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI15_10_IRQn 0 */
-
+	
   /* USER CODE END EXTI15_10_IRQn 0 */
   if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_12) != RESET)
   {
